@@ -23,10 +23,14 @@ security:
             jwt: ~
 
     access_control:
-        # 1. Reglas Públicas (Las más específicas)
+        # --- REGLAS PÚBLICAS ---
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/contact$, methods: [POST], roles: PUBLIC_ACCESS }
+        - { path: ^/api/news$, methods: [GET], roles: PUBLIC_ACCESS }
 
-        # 2. Reglas Protegidas (Cualquier otra cosa que empiece por /api)
+        # --- REGLAS PRIVADAS ---
+        # Bloquea cualquier otra acción en contacto o noticias (GET, PUT, DELETE)
         - { path: ^/api/contact, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/news, roles: IS_AUTHENTICATED_FULLY }
+        # Bloqueo total de cualquier otra ruta /api
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
