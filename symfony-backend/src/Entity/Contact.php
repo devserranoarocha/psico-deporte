@@ -21,7 +21,7 @@ class Contact
     private ?string $email = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $reason = null;
+    private ?string $message = null;
 
     #[ORM\Column]
     private ?bool $read = null;
@@ -55,14 +55,14 @@ class Contact
         return $this;
     }
 
-    public function getReason(): ?string
+    public function getMessage(): ?string
     {
-        return $this->reason;
+        return $this->message;
     }
 
-    public function setReason(string $reason): static
+    public function setMessage(string $message): static
     {
-        $this->reason = $reason;
+        $this->message = $message;
 
         return $this;
     }

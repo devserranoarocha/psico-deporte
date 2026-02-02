@@ -32,14 +32,14 @@ final class ContactController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (empty($data['name']) || empty($data['email']) || empty($data['reason'])) {
+        if (empty($data['name']) || empty($data['email']) || empty($data['message'])) {
             return $this->json(['error' => 'Datos incompletos'], Response::HTTP_BAD_REQUEST);
         }
 
         $contact = new Contact();
         $contact->setName($data['name']);
         $contact->setEmail($data['email']);
-        $contact->setReason($data['reason']);
+        $contact->setMessage($data['message']);
         $contact->setRead(false); // Por defecto no leído
 
         $this->entityManager->persist($contact);
