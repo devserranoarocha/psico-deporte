@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ContactService } from '../../services/contact.service'
 
 @Component({
   selector: 'app-landing',
@@ -59,7 +60,7 @@ export class LandingComponent implements OnInit {
     message: ''
   };
 
-  constructor() { }
+  constructor(private contactService: ContactService) { }
 
   ngOnInit(): void { }
 
@@ -67,10 +68,22 @@ export class LandingComponent implements OnInit {
    * Lógica para enviar el formulario a la API de Symfony
    */
   onSubmit(): void {
-    console.log('Datos a enviar a Symfony:', this.contactForm);
-    
-    // Simulación
-    alert('Formulario de contacto enviado con éxito (Integración con Symfony pendiente).');
+    if (this.contactForm.name && this.contactForm.email && this.contactForm.message) {
+      this.contactService.sendForm(this.contactForm).subscribe({
+        next: (response) => {
+          console.log('Éxito:', response);
+          alert('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
+          this.resetForm();
+        },
+        error: (error) => {
+          console.error('Error al enviar:', error);
+          alert('Hubo un error al enviar el mensaje. Verifica que el backend esté encendido.');
+        }
+      });
+    }
+  }
+
+  private resetForm(): void {
     this.contactForm = { name: '', email: '', message: '' };
   }
 }
