@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContactService } from '../../services/contact.service'
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule 
+    FormsModule,
+    RouterModule 
   ],
   templateUrl: './landing.component.html',
   styleUrls: []
