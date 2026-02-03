@@ -1,6 +1,7 @@
 // app.routes.ts
 import { Routes } from '@angular/router';
 import { LandingComponent } from './modules/landing/landing.component';
+import { NewsComponent } from './modules/news/news.component';
 // import { NotFoundComponent } from './not-found/not-found.component'; // Componente para manejar rutas no encontradas
 
 export const routes: Routes = [
@@ -9,6 +10,11 @@ export const routes: Routes = [
     component: LandingComponent,
     title: 'Psicologia Deportiva' // Define el título de la página
   },
+  { path: 'noticias', 
+    component: NewsComponent,
+    title: 'Psicologia Deportiva - Noticias' 
+  }
+
 /*
   {
     path: 'about',
