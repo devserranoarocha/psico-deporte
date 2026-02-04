@@ -2,6 +2,7 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './modules/landing/landing.component';
 import { NewsComponent } from './modules/news/news.component';
+import { LoginComponent } from './modules/login/login.component';
 // import { NotFoundComponent } from './not-found/not-found.component'; // Componente para manejar rutas no encontradas
 
 export const routes: Routes = [
@@ -13,8 +14,16 @@ export const routes: Routes = [
   { path: 'noticias', 
     component: NewsComponent,
     title: 'Psicologia Deportiva - Noticias' 
-  }
-
+  },
+  { path: 'admin', 
+    component: LoginComponent, 
+    title: 'Psicologia Deportiva - Login'
+  }, // Acceso al login
+  /*{ path: 'admin-panel', 
+    component: AdminPanelComponent,
+    title: 'Psicologia Deportiva - Panel Administrativo'
+  },
+  */
 /*
   {
     path: 'about',

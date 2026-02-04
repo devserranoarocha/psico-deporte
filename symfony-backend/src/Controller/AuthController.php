@@ -28,7 +28,7 @@ final class AuthController extends AbstractController
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(): JsonResponse
     {
-        // Interceptado por LexikJWT
+        // Interceptado por LexikJWT según security.yaml
         return $this->json(['message' => 'Check security.yaml configuration.']);
     }
 
@@ -42,6 +42,7 @@ final class AuthController extends AbstractController
         return $this->json([
             'id' => $user->getId(),
             'username' => $user->getUserIdentifier(),
+            'email' => $user->getEmail(), // Nuevo campo incluido
         ]);
     }
 
@@ -54,12 +55,17 @@ final class AuthController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        // 1. Cambiar el nombre de usuario (si se envía)
+        // 1. Cambiar el nombre de usuario
         if (isset($data['username'])) {
             $user->setUsername($data['username']);
         }
 
-        // 2. Cambiar la contraseña (si se envía)
+        // 2. Cambiar el email (Nuevo)
+        if (isset($data['email'])) {
+            $user->setEmail($data['email']);
+        }
+
+        // 3. Cambiar la contraseña
         if (isset($data['password']) && !empty($data['password'])) {
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
@@ -72,7 +78,8 @@ final class AuthController extends AbstractController
 
         return $this->json([
             'message' => 'Usuario actualizado correctamente',
-            'username' => $user->getUserIdentifier()
+            'username' => $user->getUserIdentifier(),
+            'email' => $user->getEmail()
         ]);
     }
 }
