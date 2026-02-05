@@ -21,12 +21,17 @@ class AppFixtures extends Fixture
         $admin = new User();
         $admin->setUsername('admin');
         
-        // Hasheamos la contraseña
+        // Añadimos el nuevo campo email
+        $admin->setEmail('admin@psicodeporte.es');
+        
+        // Hasheamos la contraseña 'adminpass'
         $password = $this->hasher->hashPassword($admin, 'adminpass');
         $admin->setPassword($password);
+
+        // Opcional: Asignar rol de administrador
+        $admin->setRoles(['ROLE_ADMIN']);
 
         $manager->persist($admin);
         $manager->flush();
     }
 }
-

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styles: []
 })
@@ -43,6 +43,6 @@ export class LoginComponent {
   }
 
   forgotPassword(): void {
-    alert('Funcionalidad de recuperación de contraseña próximamente disponible.');
+    this.router.navigate(['/admin/recovery']);
   }
 }

@@ -82,4 +82,26 @@ final class AuthController extends AbstractController
             'email' => $user->getEmail()
         ]);
     }
+    #[Route('/recover-password', name: 'recover_password', methods: ['POST'])]
+    public function recoverPassword(Request $request, \App\Repository\UserRepository $userRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $username = $data['username'] ?? '';
+        $email = $data['email'] ?? '';
+
+        // Buscamos un usuario que coincida con AMBOS campos
+        $user = $userRepository->findOneBy([
+            'username' => $username,
+            'email' => $email
+        ]);
+
+        if (!$user) {
+            return $this->json(['error' => 'Datos inválidos'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        // --- LÓGICA DE ENVÍO DE EMAIL PENDIENTE ---
+        // Aquí se generaria una contraseña temporal, se guardaria en el usuario y enviarías el correo.
+
+        return $this->json(['message' => 'Email enviado correctamente']);
+    }
 }
