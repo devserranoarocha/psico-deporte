@@ -27,6 +27,7 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/contact$, methods: [POST], roles: PUBLIC_ACCESS }
         - { path: ^/api/news$, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/recover-password, roles: PUBLIC_ACCESS }  
 
         # --- REGLAS PRIVADAS ---
         # Bloquea cualquier otra acción en contacto o noticias (GET, PUT, DELETE)
