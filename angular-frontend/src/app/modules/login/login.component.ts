@@ -26,7 +26,7 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Llamada al endpoint definido en tu security.yaml y AuthController
+    // Llamada al endpoint definido en security.yaml y AuthController
     this.http.post<any>('http://localhost:8000/api/login', this.loginData).subscribe({
       next: (response) => {
         // Guardamos el token (LexikJWT devuelve 'token')

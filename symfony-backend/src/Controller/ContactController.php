@@ -62,16 +62,23 @@ final class ContactController extends AbstractController
     }
 
     /**
-     * PATCH /api/contact/{id}/read
-     * Marcar un mensaje como leído.
+     * PATCH /api/contact/{id}/toggle-read
+     * Cambia el estado de leído/no leído y lo guarda.
      */
-    #[Route('/{id}/read', name: 'mark_read', methods: ['PATCH'])]
-    public function markAsRead(Contact $contact): JsonResponse
+    #[Route('/{id}/toggle-read', name: 'toggle_read', methods: ['PATCH'])]
+    public function toggleRead(Contact $contact, EntityManagerInterface $em): JsonResponse
     {
-        $contact->setRead(true);
-        $this->entityManager->flush();
+        // Invertimos el estado actual
+        $contact->setRead(!$contact->isRead());
+        
+        // Guardamos en la base de datos
+        $em->flush();
 
-        return $this->json(['message' => 'Mensaje marcado como leído']);
+        return $this->json([
+            'id' => $contact->getId(),
+            'read' => $contact->isRead(),
+            'message' => 'Estado actualizado correctamente'
+        ]);
     }
 
     /**
