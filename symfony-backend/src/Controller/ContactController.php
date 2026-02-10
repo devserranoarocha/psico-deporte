@@ -50,13 +50,13 @@ final class ContactController extends AbstractController
 
     /**
      * GET /api/contact
-     * Listado para el panel de administración.
+     * Listado para el panel de administración ordenado, nuevos primero.
      */
     #[Route('', name: 'list', methods: ['GET'])]
     public function list(): JsonResponse
     {
-        // El acceso aquí será restringido por el security.yaml (IS_AUTHENTICATED_FULLY)
-        $messages = $this->repository->findAll();
+        // Buscamos todos ([]) y ordenamos por 'id' de forma DESCENDENTE
+        $messages = $this->repository->findBy([], ['id' => 'DESC']);
         
         return $this->json($messages);
     }
