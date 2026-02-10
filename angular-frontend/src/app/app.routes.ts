@@ -4,6 +4,7 @@ import { LandingComponent } from './modules/landing/landing.component';
 import { NewsComponent } from './modules/news/news.component';
 import { LoginComponent } from './modules/login/login.component';
 import { LoginRecoveryComponent } from './modules/login-recovery/login-recovery.component';
+import { AdminPanelComponent } from './modules/admin-panel/admin-panel.component';
 // import { NotFoundComponent } from './not-found/not-found.component'; // Componente para manejar rutas no encontradas
 
 export const routes: Routes = [
@@ -22,12 +23,13 @@ export const routes: Routes = [
   }, 
   { path: 'admin/recovery',  // Acceso a la recuperación de contraseña
     component: LoginRecoveryComponent, 
-    title: 'Psicologia Deportiva - Recuperar Contraseña' }
-  /*{ path: 'admin-panel', 
+    title: 'Psicologia Deportiva - Recuperar Contraseña' 
+  },
+  { path: 'admin-panel', 
     component: AdminPanelComponent,
     title: 'Psicologia Deportiva - Panel Administrativo'
   },
-  */
+
 /*
   {
     path: 'about',
