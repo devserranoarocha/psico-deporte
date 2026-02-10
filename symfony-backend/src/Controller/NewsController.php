@@ -27,39 +27,45 @@ final class NewsController extends AbstractController
     public function list(): JsonResponse
     {
         $news = $this->repository->findBy([], ['date' => 'DESC', 'id' => 'DESC']);
-        
         $data = array_map(function(News $item) {
             return [
                 'id' => $item->getId(),
                 'title' => $item->getTitle(),
                 'date' => $item->getDate()->format('Y-m-d'),
                 'news_text' => $item->getNewsText(),
+                'image' => $item->getImage(), // Devolvemos el nombre de la imagen
             ];
         }, $news);
-
         return $this->json($data);
     }
 
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        // Al usar FormData, los datos vienen en $request->request y $request->files
+        $title = $request->request->get('title');
+        $text = $request->request->get('news_text');
+        $dateStr = $request->request->get('date');
+        $imageFile = $request->files->get('image');
 
-        if (empty($data['title']) || empty($data['news_text'])) {
-            return $this->json(['error' => 'El título y el contenido son obligatorios'], Response::HTTP_BAD_REQUEST);
+        if (!$title || !$text) {
+            return $this->json(['error' => 'Faltan datos'], 400);
         }
 
         $news = new News();
-        $news->setTitle($data['title']);
-        $news->setNewsText($data['news_text']);
-        
-        $date = isset($data['date']) ? new \DateTime($data['date']) : new \DateTime();
-        $news->setDate($date);
+        $news->setTitle($title);
+        $news->setNewsText($text);
+        $news->setDate(new \DateTime($dateStr ?: 'now'));
+
+        if ($imageFile) {
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+            $imageFile->move($this->getParameter('news_images_directory'), $newFilename);
+            $news->setImage($newFilename);
+        }
 
         $this->entityManager->persist($news);
         $this->entityManager->flush();
-
-        return $this->json(['message' => 'Noticia creada con éxito'], Response::HTTP_CREATED);
+        return $this->json(['message' => 'Creada con éxito']);
     }
 
     #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'])]

@@ -64,25 +64,37 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit(): void {
-    const url = 'http://localhost:8000/api/news';
-    const headers = this.getHeaders();
+selectedFile: File | null = null;
 
-    if (this.isEditing && this.newsModel.id) {
-      this.http.put(`${url}/${this.newsModel.id}`, this.newsModel, { headers }).subscribe({
-        next: () => {
-          this.resetForm();
-          this.loadNews();
-        }
-      });
-    } else {
-      this.http.post(url, this.newsModel, { headers }).subscribe({
-        next: () => {
-          this.resetForm();
-          this.loadNews();
-        }
-      });
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+
+  onSubmit(): void {
+  const url = 'http://localhost:8000/api/news';
+  const formData = new FormData();
+  
+  formData.append('title', this.newsModel.title);
+  formData.append('news_text', this.newsModel.news_text);
+  formData.append('date', this.newsModel.date);
+  
+  if (this.selectedFile) {
+    formData.append('image', this.selectedFile);
+  }
+
+  this.http.post(url, formData, { headers: this.getHeaders() }).subscribe({
+    next: () => {
+      this.resetForm();
+      this.loadNews();
+      this.selectedFile = null;
     }
+  });
+  }
+
+  resetForm(): void {
+    this.isEditing = false;
+    this.newsModel = { id: null, title: '', news_text: '', date: new Date().toISOString().split('T')[0] };
+    this.selectedFile = null;
   }
 
   editNews(news: any): void {
@@ -96,16 +108,6 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     this.http.delete(`http://localhost:8000/api/news/${id}`, { headers: this.getHeaders() }).subscribe({
       next: () => this.loadNews()
     });
-  }
-
-  resetForm(): void {
-    this.isEditing = false;
-    this.newsModel = { 
-      id: null, 
-      title: '', 
-      news_text: '', 
-      date: new Date().toISOString().split('T')[0] 
-    };
   }
 
   logout(): void {
