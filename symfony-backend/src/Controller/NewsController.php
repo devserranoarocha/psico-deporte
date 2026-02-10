@@ -23,19 +23,15 @@ final class NewsController extends AbstractController
         $this->repository = $repository;
     }
 
-    /**
-     * GET /api/news
-     * Endpoint público para mostrar las noticias en la web.
-     */
     #[Route('', name: 'list', methods: ['GET'])]
     public function list(): JsonResponse
     {
-        $news = $this->repository->findBy([], ['date' => 'DESC']);
+        $news = $this->repository->findBy([], ['date' => 'DESC', 'id' => 'DESC']);
         
-        // Mapeamos para asegurar el formato de la fecha al devolver JSON
         $data = array_map(function(News $item) {
             return [
                 'id' => $item->getId(),
+                'title' => $item->getTitle(),
                 'date' => $item->getDate()->format('Y-m-d'),
                 'news_text' => $item->getNewsText(),
             ];
@@ -44,25 +40,21 @@ final class NewsController extends AbstractController
         return $this->json($data);
     }
 
-    /**
-     * POST /api/news
-     * Crear una nueva noticia (Protegido).
-     */
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        if (empty($data['news_text'])) {
-            return $this->json(['error' => 'El texto de la noticia es obligatorio'], Response::HTTP_BAD_REQUEST);
+        if (empty($data['title']) || empty($data['news_text'])) {
+            return $this->json(['error' => 'El título y el contenido son obligatorios'], Response::HTTP_BAD_REQUEST);
         }
 
         $news = new News();
-        // Si no viene fecha, usamos la actual
-        $date = isset($data['date']) ? new \DateTime($data['date']) : new \DateTime();
-        
-        $news->setDate($date);
+        $news->setTitle($data['title']);
         $news->setNewsText($data['news_text']);
+        
+        $date = isset($data['date']) ? new \DateTime($data['date']) : new \DateTime();
+        $news->setDate($date);
 
         $this->entityManager->persist($news);
         $this->entityManager->flush();
@@ -70,14 +62,14 @@ final class NewsController extends AbstractController
         return $this->json(['message' => 'Noticia creada con éxito'], Response::HTTP_CREATED);
     }
 
-    /**
-     * PUT /api/news/{id}
-     * Editar una noticia existente (Protegido).
-     */
     #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'])]
     public function update(Request $request, News $news): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
+        if (isset($data['title'])) {
+            $news->setTitle($data['title']);
+        }
 
         if (isset($data['news_text'])) {
             $news->setNewsText($data['news_text']);
@@ -92,16 +84,12 @@ final class NewsController extends AbstractController
         return $this->json(['message' => 'Noticia actualizada correctamente']);
     }
 
-    /**
-     * DELETE /api/news/{id}
-     * Eliminar una noticia (Protegido).
-     */
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(News $news): JsonResponse
     {
         $this->entityManager->remove($news);
         $this->entityManager->flush();
 
-        return $this->json(['message' => 'Noticia eliminada']);
+        return $this->json(['message' => 'Noticia eliminada correctamente']);
     }
 }

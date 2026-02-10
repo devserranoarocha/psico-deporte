@@ -17,11 +17,12 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   newsList: any[] = [];
   isLoading: boolean = true;
   
-  // Modelo para el formulario (Crear/Editar)
+  // Modelo actualizado con el campo 'title'
   newsModel = {
     id: null as number | null,
+    title: '',
     news_text: '',
-    date: new Date().toISOString().split('T')[0] // Fecha actual por defecto
+    date: new Date().toISOString().split('T')[0]
   };
 
   isEditing: boolean = false;
@@ -54,7 +55,8 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   loadNews(): void {
     this.http.get<any[]>('http://localhost:8000/api/news', { headers: this.getHeaders() }).subscribe({
       next: (data) => {
-        // Ordenar por ID descendente (o por fecha si prefieres)
+        // La ordenación ahora viene preferiblemente del backend, 
+        // pero reforzamos por ID descendente aquí.
         this.newsList = data.sort((a, b) => b.id - a.id);
         this.isLoading = false;
       },
@@ -67,7 +69,6 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     const headers = this.getHeaders();
 
     if (this.isEditing && this.newsModel.id) {
-      // Editar
       this.http.put(`${url}/${this.newsModel.id}`, this.newsModel, { headers }).subscribe({
         next: () => {
           this.resetForm();
@@ -75,7 +76,6 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      // Crear
       this.http.post(url, this.newsModel, { headers }).subscribe({
         next: () => {
           this.resetForm();
@@ -87,6 +87,7 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
 
   editNews(news: any): void {
     this.isEditing = true;
+    // Clonamos el objeto para evitar editar la lista directamente antes de guardar
     this.newsModel = { ...news };
   }
 
@@ -99,7 +100,12 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
 
   resetForm(): void {
     this.isEditing = false;
-    this.newsModel = { id: null, news_text: '', date: new Date().toISOString().split('T')[0] };
+    this.newsModel = { 
+      id: null, 
+      title: '', 
+      news_text: '', 
+      date: new Date().toISOString().split('T')[0] 
+    };
   }
 
   logout(): void {

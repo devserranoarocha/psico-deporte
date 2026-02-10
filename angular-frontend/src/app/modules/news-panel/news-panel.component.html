@@ -2,7 +2,7 @@
   <nav class="bg-dark text-white shadow-lg">
     <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
       <div class="flex items-center">
-        <span class="text-xl font-bold">PSICO<span class="text-accent">PANEL</span></span>
+        <span class="text-xl font-bold uppercase tracking-tighter">PSICO<span class="text-accent">PANEL</span></span>
         <div class="ml-6 pl-6 border-l border-gray-700 hidden md:block">
           <p class="text-[10px] text-gray-400 uppercase tracking-widest font-mono">
             {{ currentDate | date:'EEEE, d \'de\' MMMM':'':'es-ES' }}
@@ -13,12 +13,12 @@
 
       <div class="flex items-center space-x-8">
         <div class="hidden lg:flex space-x-6">
-          <a routerLink="/admin-panel" class="hover:text-accent transition-colors text-sm">Mensajes</a>
+          <a routerLink="/admin-panel" class="hover:text-accent transition-colors text-sm font-medium">Mensajes</a>
           <a routerLink="/news-panel" class="text-accent font-bold border-b-2 border-accent pb-1 text-sm">Noticias</a>
         </div>
         <div class="flex items-center border-l border-gray-700 pl-6">
           <span class="text-sm mr-4 italic text-gray-300">Hola, {{ currentUser?.username }}</span>
-          <button (click)="logout()" class="bg-accent hover:bg-white hover:text-dark text-white px-3 py-1 rounded text-xs font-bold transition-all">SALIR</button>
+          <button (click)="logout()" class="bg-accent hover:bg-white hover:text-dark text-white px-3 py-1 rounded text-xs font-bold transition-all shadow-md">SALIR</button>
         </div>
       </div>
     </div>
@@ -28,28 +28,38 @@
     
     <div class="lg:col-span-1">
       <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 sticky top-24">
-        <h3 class="text-xl font-bold text-dark mb-4">
-          {{ isEditing ? 'Editar Noticia' : 'Nueva Noticia' }}
+        <h3 class="text-xl font-bold text-dark mb-6 border-b pb-2">
+          {{ isEditing ? 'Editar Noticia' : 'Crear Noticia' }}
         </h3>
-        <form (ngSubmit)="onSubmit()" #newsForm="ngForm" class="space-y-4">
+        
+        <form (ngSubmit)="onSubmit()" #newsForm="ngForm" class="space-y-5">
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Fecha de Publicación</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Título de la noticia</label>
+            <input type="text" name="title" [(ngModel)]="newsModel.title" required
+                   class="w-full p-3 border-2 border-gray-50 rounded-lg focus:border-accent outline-none text-sm font-semibold transition-all"
+                   placeholder="Ej: Nueva apertura en Madrid">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Fecha de publicación</label>
             <input type="date" name="date" [(ngModel)]="newsModel.date" required
-                   class="w-full p-2 border rounded-lg focus:border-accent outline-none text-sm">
+                   class="w-full p-3 border-2 border-gray-50 rounded-lg focus:border-accent outline-none text-sm transition-all">
           </div>
+
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Contenido de la Noticia</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Contenido</label>
             <textarea name="news_text" [(ngModel)]="newsModel.news_text" required rows="6"
-                      class="w-full p-2 border rounded-lg focus:border-accent outline-none text-sm resize-none"
-                      placeholder="Escribe aquí el contenido..."></textarea>
+                      class="w-full p-3 border-2 border-gray-50 rounded-lg focus:border-accent outline-none text-sm resize-none transition-all"
+                      placeholder="Escribe el cuerpo de la noticia aquí..."></textarea>
           </div>
-          <div class="flex space-x-2">
+
+          <div class="flex space-x-3 pt-2">
             <button type="submit" [disabled]="!newsForm.valid"
-                    class="flex-1 bg-dark text-white py-2 rounded-lg font-bold hover:bg-accent transition-colors disabled:opacity-50">
-              {{ isEditing ? 'Guardar Cambios' : 'Publicar' }}
+                    class="flex-1 bg-dark text-white py-3 rounded-lg font-bold hover:bg-accent transition-all shadow-lg disabled:opacity-50">
+              {{ isEditing ? 'ACTUALIZAR' : 'PUBLICAR' }}
             </button>
             <button *ngIf="isEditing" type="button" (click)="resetForm()"
-                    class="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                    class="bg-gray-100 text-gray-500 px-5 py-3 rounded-lg hover:bg-gray-200 transition-all font-bold">
               ✕
             </button>
           </div>
@@ -58,36 +68,60 @@
     </div>
 
     <div class="lg:col-span-2">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-extrabold text-dark tracking-tight">Historial de Noticias</h2>
-        <span class="text-xs bg-dark text-white px-3 py-1 rounded-full uppercase font-bold">{{ newsList.length }} Publicadas</span>
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <h2 class="text-3xl font-extrabold text-dark tracking-tighter">HISTORIAL</h2>
+          <p class="text-gray-400 text-sm">Gestiona tus noticias publicadas</p>
+        </div>
+        <span class="text-[10px] bg-dark text-white px-3 py-1 rounded-full uppercase font-black tracking-widest">
+          {{ newsList.length }} Entradas
+        </span>
       </div>
 
-      <div class="space-y-4">
+      <div class="space-y-6">
         <div *ngFor="let item of newsList" 
-             class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow group">
-          <div class="flex justify-between items-start mb-3">
-            <span class="text-accent font-mono text-xs font-bold px-2 py-1 bg-accent/5 rounded">
-              {{ item.date | date:'dd MMM yyyy':'':'es-ES' }}
-            </span>
-            <div class="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button (click)="editNews(item)" class="text-blue-500 hover:text-blue-700 p-1">
+             class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group relative">
+          
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex flex-col">
+              <span class="text-accent font-mono text-[10px] font-bold uppercase tracking-widest mb-1">
+                {{ item.date | date:'dd · MMMM · yyyy':'':'es-ES' }}
+              </span>
+              <h4 class="text-xl font-bold text-dark group-hover:text-accent transition-colors leading-tight">
+                {{ item.title }}
+              </h4>
+            </div>
+
+            <div class="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white shadow-sm border rounded-lg p-1">
+              <button (click)="editNews(item)" class="text-blue-500 hover:bg-blue-50 p-2 rounded-md transition-colors" title="Editar">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </button>
-              <button (click)="deleteNews(item.id)" class="text-red-400 hover:text-red-600 p-1">
+              <button (click)="deleteNews(item.id)" class="text-red-400 hover:bg-red-50 p-2 rounded-md transition-colors" title="Eliminar">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
             </div>
           </div>
-          <p class="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">{{ item.news_text }}</p>
+
+          <div class="prose prose-sm max-w-none">
+            <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">{{ item.news_text }}</p>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-gray-50 flex justify-end">
+            <span class="text-[9px] text-gray-300 font-mono tracking-tighter">ID: #{{ item.id }}</span>
+          </div>
         </div>
 
-        <div *ngIf="newsList.length === 0" class="bg-white p-12 text-center rounded-xl border-2 border-dashed border-gray-200">
-          <p class="text-gray-400 italic">No hay noticias publicadas todavía.</p>
+        <div *ngIf="newsList.length === 0 && !isLoading" class="bg-white p-20 text-center rounded-2xl border-2 border-dashed border-gray-100">
+          <div class="text-gray-300 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <p class="text-gray-400 font-medium italic">No hay noticias en el archivo.</p>
         </div>
       </div>
     </div>
