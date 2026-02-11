@@ -67,8 +67,14 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   loadUserData(): void {
-    const user = localStorage.getItem('user');
-    if (user) this.currentUser = JSON.parse(user);
+    // traemos los datos frescos de la API
+    this.http.get('http://localhost:8000/api/me', { headers: this.getHeaders() }).subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        console.log('Usuario cargado desde API:', this.currentUser);
+      },
+      error: () => this.logout() // Si el token no es válido, fuera
+    });
   }
 
   loadNews(): void {
