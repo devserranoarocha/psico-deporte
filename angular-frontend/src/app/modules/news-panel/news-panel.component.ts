@@ -2,21 +2,26 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms'; // Añadido ReactiveFormsModule y FormControl
 import { interval, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators'; // Añadido para la búsqueda reactiva
 
 @Component({
   selector: 'app-news-panel',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule], // Incluido ReactiveFormsModule
   templateUrl: './news-panel.component.html'
 })
 export class NewsPanelComponent implements OnInit, OnDestroy {
   currentUser: any = null;
   currentDate: Date = new Date();
   newsList: any[] = [];
+  filteredNews: any[] = []; // Lista para mostrar resultados filtrados
   isLoading: boolean = true;
   
+  // Control reactivo para el buscador
+  searchControl: FormControl = new FormControl('');
+
   newsModel = {
     id: null as number | null,
     title: '',
@@ -26,19 +31,34 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
 
   isEditing: boolean = false;
   selectedFile: File | null = null;
-  imagePreview: string | ArrayBuffer | null = null; // Variable para la vista previa
-  private timeSubscription?: Subscription;
+  imagePreview: string | ArrayBuffer | null = null;
+  
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.loadUserData();
     this.loadNews();
-    this.timeSubscription = interval(1000).subscribe(() => this.currentDate = new Date());
+    
+    // Suscripción al reloj
+    this.subscriptions.add(
+      interval(1000).subscribe(() => this.currentDate = new Date())
+    );
+
+    // Configuración de la búsqueda reactiva
+    this.subscriptions.add(
+      this.searchControl.valueChanges.pipe(
+        debounceTime(300), // Espera 300ms tras dejar de escribir
+        distinctUntilChanged() // Solo si el valor cambió
+      ).subscribe(term => {
+        this.filterNews(term);
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    this.timeSubscription?.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   private getHeaders(): HttpHeaders {
@@ -56,18 +76,29 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     this.http.get<any[]>('http://localhost:8000/api/news').subscribe({
       next: (data) => {
         this.newsList = data.sort((a, b) => b.id - a.id);
+        this.filterNews(this.searchControl.value); // Aplicar filtro actual al cargar
         this.isLoading = false;
       },
       error: (err) => console.error('Error cargando noticias:', err)
     });
   }
 
+  // Lógica de filtrado
+  filterNews(term: string): void {
+    if (!term) {
+      this.filteredNews = [...this.newsList];
+    } else {
+      const lowerTerm = term.toLowerCase();
+      this.filteredNews = this.newsList.filter(news => 
+        news.title.toLowerCase().includes(lowerTerm)
+      );
+    }
+  }
+
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-
-      // Lógica para generar la previsualización
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
@@ -104,13 +135,12 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   editNews(news: any): void {
     this.isEditing = true;
     this.newsModel = { ...news };
-    
-    // Al editar, mostramos la imagen que ya tiene en el servidor
     if (news.image) {
       this.imagePreview = `http://localhost:8000/uploads/news/${news.image}`;
     } else {
       this.imagePreview = null;
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll al formulario
   }
 
   deleteNews(id: number): void {
