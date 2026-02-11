@@ -27,3 +27,8 @@
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+# Ignorar las imágenes subidas por los usuarios
+/public/uploads/news/*
+# Pero permitir que Git siga la carpeta (si añades un .gitkeep dentro)
+!/public/uploads/news/.gitkeep
