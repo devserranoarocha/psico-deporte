@@ -17,7 +17,6 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   newsList: any[] = [];
   isLoading: boolean = true;
   
-  // Modelo actualizado con el campo 'title'
   newsModel = {
     id: null as number | null,
     title: '',
@@ -26,6 +25,8 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   };
 
   isEditing: boolean = false;
+  selectedFile: File | null = null;
+  imagePreview: string | ArrayBuffer | null = null; // Variable para la vista previa
   private timeSubscription?: Subscription;
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -46,17 +47,14 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   loadUserData(): void {
-    this.http.get('http://localhost:8000/api/me', { headers: this.getHeaders() }).subscribe({
-      next: (user) => this.currentUser = user,
-      error: () => this.logout()
-    });
+    const user = localStorage.getItem('user');
+    if (user) this.currentUser = JSON.parse(user);
   }
 
   loadNews(): void {
-    this.http.get<any[]>('http://localhost:8000/api/news', { headers: this.getHeaders() }).subscribe({
+    this.isLoading = true;
+    this.http.get<any[]>('http://localhost:8000/api/news').subscribe({
       next: (data) => {
-        // La ordenación ahora viene preferiblemente del backend, 
-        // pero reforzamos por ID descendente aquí.
         this.newsList = data.sort((a, b) => b.id - a.id);
         this.isLoading = false;
       },
@@ -64,43 +62,55 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     });
   }
 
-selectedFile: File | null = null;
-
   onFileSelected(event: any): void {
-    this.selectedFile = event.target.files[0];
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+
+      // Lógica para generar la previsualización
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   onSubmit(): void {
-  const url = 'http://localhost:8000/api/news';
-  const formData = new FormData();
-  
-  formData.append('title', this.newsModel.title);
-  formData.append('news_text', this.newsModel.news_text);
-  formData.append('date', this.newsModel.date);
-  
-  if (this.selectedFile) {
-    formData.append('image', this.selectedFile);
-  }
-
-  this.http.post(url, formData, { headers: this.getHeaders() }).subscribe({
-    next: () => {
-      this.resetForm();
-      this.loadNews();
-      this.selectedFile = null;
+    const formData = new FormData();
+    formData.append('title', this.newsModel.title);
+    formData.append('news_text', this.newsModel.news_text);
+    formData.append('date', this.newsModel.date);
+    
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
     }
-  });
-  }
 
-  resetForm(): void {
-    this.isEditing = false;
-    this.newsModel = { id: null, title: '', news_text: '', date: new Date().toISOString().split('T')[0] };
-    this.selectedFile = null;
+    const headers = this.getHeaders();
+    const endpoint = this.isEditing 
+      ? `http://localhost:8000/api/news/${this.newsModel.id}/update` 
+      : `http://localhost:8000/api/news`;
+
+    this.http.post(endpoint, formData, { headers }).subscribe({
+      next: () => {
+        this.resetForm();
+        this.loadNews();
+        alert(this.isEditing ? '¡Actualizado!' : '¡Publicado!');
+      },
+      error: (err) => alert('Error en la operación')
+    });
   }
 
   editNews(news: any): void {
     this.isEditing = true;
-    // Clonamos el objeto para evitar editar la lista directamente antes de guardar
     this.newsModel = { ...news };
+    
+    // Al editar, mostramos la imagen que ya tiene en el servidor
+    if (news.image) {
+      this.imagePreview = `http://localhost:8000/uploads/news/${news.image}`;
+    } else {
+      this.imagePreview = null;
+    }
   }
 
   deleteNews(id: number): void {
@@ -110,8 +120,15 @@ selectedFile: File | null = null;
     });
   }
 
+  resetForm(): void {
+    this.isEditing = false;
+    this.newsModel = { id: null, title: '', news_text: '', date: new Date().toISOString().split('T')[0] };
+    this.selectedFile = null;
+    this.imagePreview = null;
+  }
+
   logout(): void {
-    localStorage.removeItem('token');
-    this.router.navigate(['/admin']);
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

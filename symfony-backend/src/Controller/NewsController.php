@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/news', name: 'api_news_')]
@@ -33,7 +32,7 @@ final class NewsController extends AbstractController
                 'title' => $item->getTitle(),
                 'date' => $item->getDate()->format('Y-m-d'),
                 'news_text' => $item->getNewsText(),
-                'image' => $item->getImage(), // Devolvemos el nombre de la imagen
+                'image' => $item->getImage(), 
             ];
         }, $news);
         return $this->json($data);
@@ -42,60 +41,70 @@ final class NewsController extends AbstractController
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        // Al usar FormData, los datos vienen en $request->request y $request->files
         $title = $request->request->get('title');
         $text = $request->request->get('news_text');
         $dateStr = $request->request->get('date');
         $imageFile = $request->files->get('image');
-
-        if (!$title || !$text) {
-            return $this->json(['error' => 'Faltan datos'], 400);
-        }
 
         $news = new News();
         $news->setTitle($title);
         $news->setNewsText($text);
         $news->setDate(new \DateTime($dateStr ?: 'now'));
 
+        // Control de imagen: Si no hay archivo, el campo 'image' en DB será NULL
         if ($imageFile) {
             $newFilename = uniqid().'.'.$imageFile->guessExtension();
             $imageFile->move($this->getParameter('news_images_directory'), $newFilename);
             $news->setImage($newFilename);
+        } else {
+            $news->setImage(null);
         }
 
         $this->entityManager->persist($news);
         $this->entityManager->flush();
-        return $this->json(['message' => 'Creada con éxito']);
+
+        return $this->json(['message' => 'Noticia creada']);
     }
 
-    #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'])]
+    #[Route('/{id}/update', name: 'update', methods: ['POST'])]
     public function update(Request $request, News $news): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $title = $request->request->get('title');
+        $text = $request->request->get('news_text');
+        $dateStr = $request->request->get('date');
+        $imageFile = $request->files->get('image');
 
-        if (isset($data['title'])) {
-            $news->setTitle($data['title']);
-        }
+        if ($title) $news->setTitle($title);
+        if ($text) $news->setNewsText($text);
+        if ($dateStr) $news->setDate(new \DateTime($dateStr));
 
-        if (isset($data['news_text'])) {
-            $news->setNewsText($data['news_text']);
-        }
+        if ($imageFile) {
+            // Borramos la anterior solo si el usuario está subiendo una nueva
+            if ($news->getImage()) {
+                $oldPath = $this->getParameter('news_images_directory').'/'.$news->getImage();
+                if (file_exists($oldPath)) unlink($oldPath);
+            }
 
-        if (isset($data['date'])) {
-            $news->setDate(new \DateTime($data['date']));
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+            $imageFile->move($this->getParameter('news_images_directory'), $newFilename);
+            $news->setImage($newFilename);
         }
+        // Si no hay $imageFile, no hacemos nada (mantiene la imagen que ya tenía)
 
         $this->entityManager->flush();
-
-        return $this->json(['message' => 'Noticia actualizada correctamente']);
+        return $this->json(['message' => 'Actualizada']);
     }
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(News $news): JsonResponse
     {
+        if ($news->getImage()) {
+            $path = $this->getParameter('news_images_directory').'/'.$news->getImage();
+            if (file_exists($path)) unlink($path);
+        }
+
         $this->entityManager->remove($news);
         $this->entityManager->flush();
-
-        return $this->json(['message' => 'Noticia eliminada correctamente']);
+        return $this->json(['message' => 'Eliminada']);
     }
 }

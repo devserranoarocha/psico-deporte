@@ -21,13 +21,13 @@
       </h2>
       <div class="w-24 h-2 bg-accent mx-auto rounded-full"></div>
       <p class="text-gray-400 mt-6 max-w-2xl mx-auto italic text-lg">
-        Herramientas, noticias y reflexiones sobre la psicología en el alto rendimiento.
+        Herramientas y reflexiones para potenciar tu rendimiento mental.
       </p>
     </div>
     
     <div *ngIf="isLoading" class="flex flex-col justify-center items-center py-20">
       <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-accent mb-4"></div>
-      <p class="text-accent font-mono text-xs uppercase tracking-widest animate-pulse">Cargando noticias...</p>
+      <p class="text-accent font-mono text-xs uppercase tracking-widest animate-pulse">Buscando novedades...</p>
     </div>
 
     <div *ngIf="!isLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -35,16 +35,12 @@
                class="bg-white rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 flex flex-col h-fit group">
         
         <div class="h-56 overflow-hidden relative bg-gray-200">
-          <img *ngIf="item.image" 
-               [src]="'http://localhost:8000/uploads/news/' + item.image" 
+          <img [src]="item.image ? 'http://localhost:8000/uploads/news/' + item.image : 'assets/images/no-image.jpg'" 
+               (error)="$any($event.target).src = 'assets/images/no-image.jpg'"
                class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                [alt]="item.title">
           
-          <div *ngIf="!item.image" class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
           <div class="absolute top-4 left-4 bg-accent text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
             {{ item.date | date:'dd MMM' }}
@@ -69,7 +65,7 @@
           </p>
 
           <div class="pt-5 border-t border-gray-100 flex justify-between items-center mt-auto">
-            <span class="text-[10px] font-bold text-gray-300 tracking-tighter italic">#Noticia_{{ item.id }}</span>
+            <span class="text-[10px] font-bold text-gray-300 tracking-tighter italic">#{{ item.id }}</span>
             
             <button (click)="toggleExpand(item)" 
                     class="group/btn flex items-center text-accent font-black text-[11px] uppercase tracking-widest hover:text-dark transition-all duration-300">
@@ -95,16 +91,13 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" />
         </svg>
       </div>
-      <p class="text-gray-400 italic text-xl">No hay noticias publicadas por el momento.</p>
-      <p class="text-gray-600 text-sm mt-2 font-mono">Vuelve pronto para ver las actualizaciones.</p>
+      <p class="text-gray-400 italic text-xl">Sin noticias nuevas hoy.</p>
     </div>
   </div>
 </section>
 
 <footer class="bg-dark py-10 border-t border-white/5">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <p class="text-gray-500 text-[10px] uppercase tracking-[0.3em]">
-      © 2026 Psicodeporte · Alto Rendimiento Mental
-    </p>
+  <div class="max-w-7xl mx-auto px-6 text-center text-gray-500 text-[10px] uppercase tracking-[0.3em]">
+    © 2026 Psicodeporte · Mente Fuerte, Juego Limpio
   </div>
 </footer>
