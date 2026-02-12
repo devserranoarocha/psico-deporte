@@ -10,7 +10,6 @@
       <a href="#sobre-mi" class="text-dark hover:text-accent font-medium">Sobre Mí</a>
       <a href="#servicios" class="text-dark hover:text-accent font-medium">Servicios</a>
       <a href="#contacto-cta" class="text-dark hover:text-accent font-medium">Contacto</a>
-      
       <a routerLink="/noticias" class="text-accent hover:text-dark font-bold border-l-2 border-gray-200 pl-4">
         Noticias
       </a>
@@ -42,7 +41,6 @@
 
 <section id="sobre-mi" class="py-16 md:py-24 bg-white text-dark">
   <div class="max-w-7xl mx-auto px-6 lg:px-8 grid md:grid-cols-12 gap-12">
-
     <div class="md:col-span-6">
       <h2 class="text-3xl font-bold text-dark mb-6 border-b-2 border-accent pb-2">Sobre Mí</h2>
       <p class="text-lg leading-relaxed mb-8">{{ aboutMeText }}</p>
@@ -62,7 +60,6 @@
                 </p>
             </div>
         </div>
-
         <h2 class="text-3xl font-bold text-dark mb-6 border-b-2 border-accent pb-2">Servicios</h2>
         <p class="text-lg leading-relaxed">{{ servicesIntro }}</p>
     </div>
@@ -76,30 +73,19 @@
 
     <div class="bg-white p-8 rounded-2xl shadow-2xl text-left max-w-lg mx-auto">
       <form (ngSubmit)="onSubmit()" #f="ngForm" class="space-y-4">
-        <input type="text" 
-               [(ngModel)]="contactForm.name" 
-               name="name" 
-               required 
+        <input type="text" [(ngModel)]="contactForm.name" name="name" required 
                class="w-full p-3 rounded-lg border-2 border-transparent focus:border-accent focus:outline-none text-dark"
                placeholder="Tu Nombre">
         
-        <input type="email" 
-               [(ngModel)]="contactForm.email" 
-               name="email" 
-               required 
-               email 
+        <input type="email" [(ngModel)]="contactForm.email" name="email" required email 
                class="w-full p-3 rounded-lg border-2 border-transparent focus:border-accent focus:outline-none text-dark"
                placeholder="Tu Email">
         
-        <textarea [(ngModel)]="contactForm.message" 
-                  name="message" 
-                  rows="3" 
-                  required
+        <textarea [(ngModel)]="contactForm.message" name="message" rows="3" required
                   class="w-full p-3 rounded-lg border-2 border-transparent focus:border-accent focus:outline-none text-dark resize-none"
                   placeholder="Tu mensaje..."></textarea>
         
-        <button type="submit" 
-                [disabled]="!f.valid"
+        <button type="submit" [disabled]="!f.valid"
                 class="w-full bg-accent text-white px-6 py-3 rounded-md text-lg font-bold hover:bg-opacity-90 transition duration-300 shadow-xl disabled:opacity-50">
           Diseñemos tu plan
         </button>
@@ -111,24 +97,12 @@
 <footer class="bg-dark text-light py-8 border-t border-accent">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
     <h3 class="text-2xl font-bold text-accent mb-6">Variables Clave Trabajadas</h3>
-    
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div>
-        <h4 class="font-semibold text-white mb-2">{{ footerContent[0].title }}</h4>
-        <p class="text-sm opacity-80">{{ footerContent[0].text }}</p>
-      </div>
-      
-      <div>
-        <h4 class="font-semibold text-white mb-2">{{ footerContent[1].title }}</h4>
-        <p class="text-sm opacity-80">{{ footerContent[1].text }}</p>
-      </div>
-      
-      <div>
-        <h4 class="font-semibold text-white mb-2">{{ footerContent[2].title }}</h4>
-        <p class="text-sm opacity-80">{{ footerContent[2].text }}</p>
+      <div *ngFor="let item of footerContent">
+        <h4 class="font-semibold text-white mb-2">{{ item.title }}</h4>
+        <p class="text-sm opacity-80">{{ item.text }}</p>
       </div>
     </div>
-    
     <div class="text-center mt-10 border-t border-gray-700 pt-6">
       <p class="text-sm opacity-70">© {{ currentYear }} Psicología Deportiva Aplicada. Desarrollado con Angular y Symfony.</p>
     </div>
