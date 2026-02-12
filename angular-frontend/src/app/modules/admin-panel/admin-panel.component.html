@@ -1,6 +1,7 @@
 <div class="min-h-screen bg-gray-50 flex flex-col">
   <nav class="bg-dark text-white shadow-lg">
     <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+      
       <div class="flex items-center">
         <span class="text-xl font-bold">PSICO<span class="text-accent">PANEL</span></span>
         <div class="ml-6 pl-6 border-l border-gray-700 hidden md:block">
@@ -17,44 +18,42 @@
         <div class="hidden lg:flex space-x-6">
           <a routerLink="/admin-panel" class="text-accent font-bold border-b-2 border-accent pb-1 text-sm">Mensajes</a>
           <a routerLink="/news-panel" class="hover:text-accent transition-colors text-sm">Noticias</a>
+          <a routerLink="/password-change" class="hover:text-accent transition-colors text-sm font-medium">Seguridad</a>
         </div>
         
         <div class="flex items-center border-l border-gray-700 pl-6">
           <span class="text-sm mr-4 italic text-gray-300">Hola, {{ currentUser?.username }}</span>
-          <button (click)="logout()" class="bg-accent hover:bg-white hover:text-dark text-white px-3 py-1 rounded text-xs font-bold transition-all">
-            SALIR
+          <button (click)="logout()" class="bg-accent hover:bg-white hover:text-dark text-white px-3 py-1 rounded text-xs font-bold transition-all shadow-md uppercase">
+            Salir
           </button>
         </div>
-      </div>
-    </div>
-  </nav>
+      </div> </div> </nav>
 
   <main class="max-w-7xl mx-auto px-6 py-10 w-full grow">
-    <div class="flex justify-between items-center mb-8">
-      <h2 class="text-2xl font-extrabold text-dark tracking-tight">Gestión de Contactos</h2>
-      <span class="text-xs bg-dark text-white px-3 py-1 rounded-full uppercase font-bold">
-        {{ messages.length }} Mensajes Totales
-      </span>
+    <div class="flex justify-between items-end mb-8">
+      <div>
+        <h2 class="text-3xl font-extrabold text-dark tracking-tighter uppercase">Bandeja de Entrada</h2>
+        <span class="text-[10px] bg-dark text-white px-3 py-1 rounded-full uppercase font-black tracking-widest">
+          {{ messages.length }} Mensajes recibidos
+        </span>
+      </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-gray-50 border-b border-gray-200">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
-            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Estado</th>
-            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Remitente</th>
-            <th class="p-4 text-xs font-bold text-gray-500 uppercase">Mensaje</th>
-            <th class="p-4 text-xs font-bold text-gray-500 uppercase text-right">Acción</th>
+            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 tracking-widest">Estado</th>
+            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 tracking-widest">Remitente</th>
+            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 tracking-widest">Mensaje</th>
+            <th class="p-4 text-right text-[10px] font-bold uppercase text-gray-400 tracking-widest">Acciones</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
-          <tr *ngFor="let msg of messages" 
-              class="hover:bg-gray-50 transition-colors"
-              [ngClass]="{'bg-gray-50/50 opacity-70': msg.read}">
-            <td class="px-6 py-4">
-                <button (click)="toggleReadStatus(msg)" 
-                        class="focus:outline-none group flex items-center space-x-2">
-                    <div [ngClass]="msg.read ? 'bg-gray-300' : 'bg-accent shadow-[0_0_8px_rgba(var(--color-accent),0.6)]'" 
+        <tbody class="divide-y divide-gray-50">
+          <tr *ngFor="let msg of messages" class="hover:bg-gray-50/50 transition-colors group">
+            <td class="p-4">
+                <button (click)="toggleReadStatus(msg)" class="flex items-center space-x-2 focus:outline-none">
+                    <div [ngClass]="msg.read ? 'bg-gray-200' : 'bg-accent shadow-[0_0_8px_rgba(var(--color-accent),0.6)]'" 
                         class="h-3 w-3 rounded-full transition-all duration-300">
                     </div>
                     <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400 group-hover:text-dark transition-colors">
@@ -79,8 +78,13 @@
           </tr>
         </tbody>
       </table>
-      
-      <div *ngIf="messages.length === 0" class="p-20 text-center">
+
+      <div *ngIf="isLoading" class="p-20 text-center">
+        <div class="animate-spin h-8 w-8 border-4 border-accent border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Cargando correspondencia...</p>
+      </div>
+
+      <div *ngIf="messages.length === 0 && !isLoading" class="p-20 text-center">
         <p class="text-gray-400 italic">No hay mensajes en la bandeja de entrada.</p>
       </div>
     </div>

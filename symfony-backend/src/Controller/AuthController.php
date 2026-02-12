@@ -149,4 +149,39 @@ final class AuthController extends AbstractController
         */
         return $this->json(['message' => 'Email enviado correctamente']);
     }
+
+    #[Route('/user/change-password', name: 'user_change_password', methods: ['POST'])]
+    public function changePassword(
+        Request $request, 
+        UserPasswordHasherInterface $passwordHasher, 
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['error' => 'No autorizado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $oldPassword = $data['oldPassword'] ?? '';
+        $newPassword = $data['newPassword'] ?? '';
+
+        // 1. Validar contraseña antigua
+        if (!$passwordHasher->isPasswordValid($user, $oldPassword)) {
+            return $this->json(['error' => 'La contraseña actual no es correcta'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // 2. Validar longitud mínima
+        if (strlen($newPassword) < 6) {
+            return $this->json(['error' => 'La nueva contraseña es demasiado corta'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // 3. Hashear y guardar
+        $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+        
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Contraseña actualizada correctamente']);
+    }
+
 }

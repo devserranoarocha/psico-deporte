@@ -165,6 +165,6 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
 
   logout(): void {
     localStorage.clear();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/admin']);
   }
 }
