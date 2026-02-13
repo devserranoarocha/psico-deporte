@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../services/toast.service'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-login-recovery',
@@ -21,22 +22,29 @@ export class LoginRecoveryComponent {
   errorMessage: string = '';
   isSubmitted: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private toastService: ToastService // Inyectamos el servicio
+  ) {}
 
   onRecoverPassword(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Enviamos ambos campos al backend
     this.http.post<any>('http://localhost:8000/api/recover-password', this.recoveryData).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.isSubmitted = true;
+        // Lanzamos toast de éxito
+        this.toastService.success('¡Identidad verificada! Revisa tu correo para la nueva clave.');
       },
       error: (err) => {
         this.isLoading = false;
-        // Mensaje genérico por seguridad, recomendando contactar al admin
-        this.errorMessage = 'Los datos introducidos no coinciden con ningún registro activo. Por favor, verifica la información o contacta con el administrador del sitio.';
+        this.errorMessage = 'Los datos introducidos no coinciden con ningún registro activo.';
+        
+        // Lanzamos toast de error
+        this.toastService.error('Error de validación: Verifica los datos introducidos.');
         console.error('Recovery error:', err);
       }
     });

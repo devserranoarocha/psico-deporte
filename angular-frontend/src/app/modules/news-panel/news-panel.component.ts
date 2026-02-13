@@ -2,27 +2,26 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms'; // Añadido ReactiveFormsModule y FormControl
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { interval, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators'; // Añadido para la búsqueda reactiva
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-news-panel',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule], // Incluido ReactiveFormsModule
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
   templateUrl: './news-panel.component.html'
 })
 export class NewsPanelComponent implements OnInit, OnDestroy {
   currentUser: any = null;
   currentDate: Date = new Date();
   newsList: any[] = [];
-  filteredNews: any[] = []; // Lista para mostrar resultados filtrados
+  filteredNews: any[] = [];
   isLoading: boolean = true;
-  
-  // Control reactivo para el buscador
   searchControl: FormControl = new FormControl('');
 
-  newsModel = {
+  ngModel = {
     id: null as number | null,
     title: '',
     news_text: '',
@@ -35,26 +34,20 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadUserData();
     this.loadNews();
-    
-    // Suscripción al reloj
-    this.subscriptions.add(
-      interval(1000).subscribe(() => this.currentDate = new Date())
-    );
-
-    // Configuración de la búsqueda reactiva
-    this.subscriptions.add(
-      this.searchControl.valueChanges.pipe(
-        debounceTime(300), // Espera 300ms tras dejar de escribir
-        distinctUntilChanged() // Solo si el valor cambió
-      ).subscribe(term => {
-        this.filterNews(term);
-      })
-    );
+    this.subscriptions.add(interval(1000).subscribe(() => this.currentDate = new Date()));
+    this.subscriptions.add(this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(term => this.filterNews(term)));
   }
 
   ngOnDestroy(): void {
@@ -67,38 +60,28 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   loadUserData(): void {
-    // traemos los datos frescos de la API
     this.http.get('http://localhost:8000/api/me', { headers: this.getHeaders() }).subscribe({
-      next: (user) => {
-        this.currentUser = user;
-        console.log('Usuario cargado desde API:', this.currentUser);
-      },
-      error: () => this.logout() // Si el token no es válido, fuera
+      next: (user) => this.currentUser = user,
+      error: () => this.logout()
     });
   }
 
   loadNews(): void {
-    this.isLoading = true;
     this.http.get<any[]>('http://localhost:8000/api/news').subscribe({
       next: (data) => {
-        this.newsList = data.sort((a, b) => b.id - a.id);
-        this.filterNews(this.searchControl.value); // Aplicar filtro actual al cargar
+        this.newsList = data;
+        this.filteredNews = data;
         this.isLoading = false;
-      },
-      error: (err) => console.error('Error cargando noticias:', err)
+      }
     });
   }
 
-  // Lógica de filtrado
   filterNews(term: string): void {
-    if (!term) {
-      this.filteredNews = [...this.newsList];
-    } else {
-      const lowerTerm = term.toLowerCase();
-      this.filteredNews = this.newsList.filter(news => 
-        news.title.toLowerCase().includes(lowerTerm)
-      );
-    }
+    const lowTerm = term?.toLowerCase() || '';
+    this.filteredNews = this.newsList.filter(n => 
+      n.title.toLowerCase().includes(lowTerm) || 
+      n.news_text.toLowerCase().includes(lowTerm)
+    );
   }
 
   onFileSelected(event: any): void {
@@ -106,65 +89,68 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     if (file) {
       this.selectedFile = file;
       const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-      };
+      reader.onload = () => this.imagePreview = reader.result;
       reader.readAsDataURL(file);
     }
   }
 
   onSubmit(): void {
+    // VALIDACIÓN LÓGICA: Trim elimina espacios vacíos al inicio y final
+    if (!this.ngModel.title.trim() || !this.ngModel.news_text.trim()) {
+      this.toastService.error('Por favor, completa el título y el contenido.');
+      return;
+    }
+
     const formData = new FormData();
-    formData.append('title', this.newsModel.title);
-    formData.append('news_text', this.newsModel.news_text);
-    formData.append('date', this.newsModel.date);
+    formData.append('title', this.ngModel.title.trim());
+    formData.append('news_text', this.ngModel.news_text.trim());
+    formData.append('date', this.ngModel.date);
     
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     }
 
-    const headers = this.getHeaders();
     const endpoint = this.isEditing 
-      ? `http://localhost:8000/api/news/${this.newsModel.id}/update` 
+      ? `http://localhost:8000/api/news/${this.ngModel.id}/update` 
       : `http://localhost:8000/api/news`;
 
-    this.http.post(endpoint, formData, { headers }).subscribe({
+    this.http.post(endpoint, formData, { headers: this.getHeaders() }).subscribe({
       next: () => {
+        this.toastService.success(this.isEditing ? 'Noticia actualizada' : 'Noticia publicada');
         this.resetForm();
         this.loadNews();
-        alert(this.isEditing ? '¡Actualizado!' : '¡Publicado!');
       },
-      error: (err) => alert('Error en la operación')
+      error: () => this.toastService.error('Error al guardar la noticia')
     });
   }
 
   editNews(news: any): void {
     this.isEditing = true;
-    this.newsModel = { ...news };
-    if (news.image) {
-      this.imagePreview = `http://localhost:8000/uploads/news/${news.image}`;
-    } else {
-      this.imagePreview = null;
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll al formulario
+    this.ngModel = { ...news };
+    this.imagePreview = news.image ? `http://localhost:8000/uploads/news/${news.image}` : 'assets/images/no-image.jpg';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   deleteNews(id: number): void {
-    if (!confirm('¿Eliminar esta noticia definitivamente?')) return;
-    this.http.delete(`http://localhost:8000/api/news/${id}`, { headers: this.getHeaders() }).subscribe({
-      next: () => this.loadNews()
-    });
+    if (confirm('¿Eliminar esta noticia?')) {
+      this.http.delete(`http://localhost:8000/api/news/${id}`, { headers: this.getHeaders() }).subscribe({
+        next: () => {
+          this.loadNews();
+          this.toastService.success('Eliminado correctamente');
+        }
+      });
+    }
   }
 
   resetForm(): void {
     this.isEditing = false;
-    this.newsModel = { id: null, title: '', news_text: '', date: new Date().toISOString().split('T')[0] };
+    this.ngModel = { id: null, title: '', news_text: '', date: new Date().toISOString().split('T')[0] };
     this.selectedFile = null;
     this.imagePreview = null;
   }
 
   logout(): void {
-    localStorage.clear();
+    localStorage.removeItem('token');
     this.router.navigate(['/admin']);
   }
 }
