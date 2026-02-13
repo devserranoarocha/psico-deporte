@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -20,23 +21,32 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private toastService: ToastService 
+  ) {}
 
   onLogin(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Llamada al endpoint definido en security.yaml y AuthController
     this.http.post<any>('http://localhost:8000/api/login', this.loginData).subscribe({
       next: (response) => {
-        // Guardamos el token (LexikJWT devuelve 'token')
         localStorage.setItem('token', response.token);
-        // Redirigimos al panel de administración
+        
+        // Lanzamos toast de éxito antes de redirigir
+        this.toastService.success('¡Sesión iniciada con éxito! Bienvenido al panel.');
+        
         this.router.navigate(['/admin-panel']);
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
+        
+        // Lanzamos toast de error para reforzar el mensaje
+        this.toastService.error('Error de autenticación: verifica tus credenciales.');
+        
         console.error('Login error:', err);
       }
     });

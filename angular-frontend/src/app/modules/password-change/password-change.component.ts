@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-password-change',
@@ -16,12 +17,17 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   isSubmitting: boolean = false;
 
-  // Propiedades para la Navbar idéntica al admin-panel
+  // Propiedades para la Navbar consistente
   currentUser: any = null;
   currentDate: Date = new Date();
   private timeSubscription?: Subscription;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+  constructor(
+    private fb: FormBuilder, 
+    private http: HttpClient, 
+    private router: Router,
+    private toastService: ToastService
+  ) {
     this.passwordForm = this.fb.group({
       oldPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -31,7 +37,7 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUserData();
-    // Iniciar el reloj en tiempo real
+    // Reloj en tiempo real idéntico a los otros paneles
     this.timeSubscription = interval(1000).subscribe(() => {
       this.currentDate = new Date();
     });
@@ -67,18 +73,20 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
     this.http.post('http://localhost:8000/api/user/change-password', this.passwordForm.value, { headers: this.getHeaders() })
       .subscribe({
         next: () => {
-          alert('Contraseña actualizada con éxito. Por seguridad, inicia sesión de nuevo.');
-          this.logout();
+          this.toastService.success('Contraseña actualizada. Por seguridad, inicia sesión de nuevo.', 4000);
+          // Retrasamos un poco el logout para que el usuario vea el mensaje
+          setTimeout(() => this.logout(), 2000);
         },
         error: (err) => {
-          this.errorMessage = err.error.error || 'Error al cambiar la contraseña';
           this.isSubmitting = false;
+          this.errorMessage = err.error.error || 'Error al cambiar la contraseña';
+          this.toastService.error(this.errorMessage);
         }
       });
   }
 
   logout(): void {
-    localStorage.clear();
+    localStorage.removeItem('token');
     this.router.navigate(['/admin']);
   }
 }

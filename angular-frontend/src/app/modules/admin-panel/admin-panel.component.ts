@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
+import { ToastService } from '../../services/toast.service'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-admin-panel',
@@ -17,7 +18,11 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   private timeSubscription?: Subscription;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private toastService: ToastService // Inyectamos el servicio
+  ) {}
 
   ngOnInit(): void {
     this.loadUserData();
@@ -41,7 +46,10 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   loadUserData(): void {
     this.http.get('http://localhost:8000/api/me', { headers: this.getHeaders() }).subscribe({
       next: (user) => this.currentUser = user,
-      error: () => this.logout()
+      error: () => {
+        this.toastService.error('Sesión expirada. Por favor, vuelve a entrar.');
+        this.logout();
+      }
     });
   }
 
@@ -51,38 +59,47 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
         this.messages = data;
         this.isLoading = false;
       },
-      error: (err) => console.error('Error:', err)
+      error: (err) => {
+        this.toastService.error('No se pudieron cargar los mensajes.');
+        console.error('Error:', err);
+      }
     });
   }
 
   toggleReadStatus(msg: any): void {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getHeaders();
     
-    // Llamamos al endpoint de toggle
     this.http.patch<any>(`http://localhost:8000/api/contact/${msg.id}/toggle-read`, {}, { headers }).subscribe({
       next: (response) => {
-        // Actualizamos el objeto local con la respuesta real del servidor
         msg.read = response.read;
-        console.log(`Mensaje ${msg.id} actualizado a leído: ${msg.read}`);
+        const estado = msg.read ? 'leído' : 'pendiente';
+        this.toastService.success(`Mensaje marcado como ${estado}.`);
       },
       error: (err) => {
         console.error('Error al guardar el estado en la BD', err);
-        alert('No se pudo actualizar el estado del mensaje en el servidor.');
+        this.toastService.error('No se pudo actualizar el estado del mensaje.');
       }
     });
   }
 
   deleteMsg(id: number): void {
-    if (confirm('¿Eliminar mensaje?')) {
+    if (confirm('¿Estás seguro de que quieres eliminar este mensaje?')) {
       this.http.delete(`http://localhost:8000/api/contact/${id}`, { headers: this.getHeaders() }).subscribe({
-        next: () => this.messages = this.messages.filter(m => m.id !== id)
+        next: () => {
+          this.messages = this.messages.filter(m => m.id !== id);
+          this.toastService.success('Mensaje eliminado correctamente.');
+        },
+        error: (err) => {
+          this.toastService.error('Error al eliminar el mensaje.');
+          console.error(err);
+        }
       });
     }
   }
 
   logout(): void {
     localStorage.removeItem('token');
+    this.toastService.success('Sesión cerrada correctamente.');
     this.router.navigate(['/admin']);
   }
 }
