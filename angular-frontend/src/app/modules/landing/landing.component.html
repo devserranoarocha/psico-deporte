@@ -19,23 +19,31 @@
 
 <header class="bg-accent text-white py-24 md:py-36 shadow-lg">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center">
+    
     <div class="md:col-span-4 flex justify-center">
         <img src="pd.png" 
-             alt="Logotipo El cuerpo corre pero la mente decide a dónde." 
-             class="w-58 h-58 object-contain">
+             alt="Logo Psicodeporte" 
+             class="w-full max-w-[280px] md:max-w-full h-auto 
+                    rounded-3xl shadow-2xl border-4 border-white/20 
+                    object-cover transform hover:scale-105 transition-all duration-500">
     </div>
-    <div class="md:col-span-8 text-center md:text-left">
-      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-        {{ impactPhrase }}
-      </h1>
-      <p class="text-xl md:text-2xl font-light italic mb-8 opacity-90">
-        {{ subtitle }}
+
+    <div class="md:col-span-8 space-y-6">
+      <h2 class="text-4xl md:text-6xl font-black leading-tight tracking-tighter uppercase">
+        Lleva tu rendimiento <br>
+        <span class="text-dark">al siguiente nivel</span>
+      </h2>
+      <p class="text-xl md:text-2xl opacity-90 font-medium italic">
+        "Psicología deportiva aplicada: claridad, estructura y emoción para que cada equipo rinda al máximo."
       </p>
-      <a href="#contacto-cta" 
-         class="bg-white text-dark px-8 py-3 rounded-md text-lg font-bold hover:bg-gray-100 transition duration-300 shadow-xl inline-block">
-        #Comencemos a trabajar!
-      </a>
+      <div class="pt-4">
+        <a href="#contacto-cta" 
+           class="bg-dark text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-accent transition-all shadow-xl inline-block uppercase tracking-wider">
+          Empezar ahora
+        </a>
+      </div>
     </div>
+
   </div>
 </header>
 
