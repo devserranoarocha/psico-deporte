@@ -18,8 +18,6 @@ import { RouterModule } from '@angular/router';
 })
 export class LandingComponent implements OnInit {
 
-  impactPhrase: string = '“El cuerpo corre pero la mente decide donde. Entrenar la mente es tan importante como entrenar el cuerpo.”'; 
-  subtitle: string = '“Psicología deportiva aplicada: claridad, estructura y emoción para que cada equipo rinda al máximo.”'; 
   aboutMeText: string = 'Soy psicóloga deportiva. Mi misión es transformar la psicología en recursos prácticos que entrenadores y atletas puedan aplicar en cada entrenamiento y competición. Trabajo con rutinas claras, señales visuales y hábitos que fortalecen la atención, la motivación, la cohesión del equipo….”'; 
   servicesIntro: string = 'Diseño intervenciones psicológicas adaptadas a cada fase del entrenamiento y la competición. Colaboro con entrenadores y equipos para que variables como la atención, la concentración, la motivación, la confianza, el manejo del estrés, la resiliencia y la cohesión grupal se conviertan en hábitos sólidos que potencien el rendimiento.'; 
   contactText: string = '¿Quieres que trabajemos juntos? Escríbeme y diseñaremos el plan psicológico que mejor se adapte a tu equipo.'; 
@@ -60,12 +58,10 @@ export class LandingComponent implements OnInit {
     if (this.contactForm.name && this.contactForm.email && this.contactForm.message) {
       this.contactService.sendForm(this.contactForm).subscribe({
         next: (response) => {
-          // Se utiliza .success() según tu ToastService
           this.toastService.success('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
           this.resetForm();
         },
         error: (error) => {
-          // Se utiliza .error() según tu ToastService
           this.toastService.error('Hubo un error al enviar el mensaje. Verifica la conexión.');
         }
       });
