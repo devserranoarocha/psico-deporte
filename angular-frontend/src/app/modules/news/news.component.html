@@ -1,0 +1,103 @@
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+    <a routerLink="/" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+      <span class="text-xl font-extrabold text-dark">PSICO</span>
+      <span class="text-xl font-extrabold text-accent">DEPORTE</span>
+    </a>
+    <div class="space-x-4 hidden md:flex">
+      <a routerLink="/" fragment="sobre-mi" class="text-dark hover:text-accent font-medium transition-colors">Sobre Mí</a>
+      <a routerLink="/" fragment="servicios" class="text-dark hover:text-accent font-medium transition-colors">Servicios</a>
+      <a routerLink="/" fragment="contacto-cta" class="text-dark hover:text-accent font-medium transition-colors">Contacto</a>
+    </div>
+  </div>
+</nav>
+
+<section class="py-20 bg-dark min-h-screen text-white">
+  <div class="max-w-7xl mx-auto px-6">
+    
+    <div class="text-center mb-20">
+      <h2 class="text-4xl md:text-6xl font-black text-white mb-4 uppercase tracking-tighter">
+        Actualidad <span class="text-accent">Deportiva</span>
+      </h2>
+      <div class="w-24 h-2 bg-accent mx-auto rounded-full"></div>
+      <p class="text-gray-400 mt-6 max-w-2xl mx-auto italic text-lg">
+        Herramientas y reflexiones para potenciar tu rendimiento mental.
+      </p>
+    </div>
+    
+    <div *ngIf="isLoading" class="flex flex-col justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-accent mb-4"></div>
+      <p class="text-accent font-mono text-xs uppercase tracking-widest animate-pulse">Buscando novedades...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <article *ngFor="let item of newsList" 
+               class="bg-white rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 flex flex-col h-fit group">
+        
+        <div class="h-56 overflow-hidden relative bg-gray-200">
+          <img [src]="item.image ? 'http://localhost:8000/uploads/news/' + item.image : 'assets/images/no-image.jpg'" 
+               (error)="$any($event.target).src = 'assets/images/no-image.jpg'"
+               class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+               [alt]="item.title">
+          
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+          <div class="absolute top-4 left-4 bg-accent text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+            {{ item.date | date:'dd MMM' }}
+          </div>
+        </div>
+        
+        <div class="p-8 flex flex-col h-full">
+          <div class="flex items-center text-accent font-mono text-[10px] font-bold uppercase tracking-widest mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {{ item.date | date:'longDate':'':'es-ES' }}
+          </div>
+
+          <h3 class="text-2xl font-extrabold text-dark mb-4 leading-tight group-hover:text-accent transition-colors duration-300">
+            {{ item.title }}
+          </h3>
+
+          <p class="text-gray-600 text-sm leading-relaxed mb-6 whitespace-pre-wrap transition-all duration-500"
+             [ngClass]="{'line-clamp-4': !item.isExpanded}">
+            {{ item.news_text }}
+          </p>
+
+          <div class="pt-5 border-t border-gray-100 flex justify-between items-center mt-auto">
+            <span class="text-[10px] font-bold text-gray-300 tracking-tighter italic">#{{ item.id }}</span>
+            
+            <button (click)="toggleExpand(item)" 
+                    class="group/btn flex items-center text-accent font-black text-[11px] uppercase tracking-widest hover:text-dark transition-all duration-300">
+              <span class="mr-1">{{ item.isExpanded ? 'Leer menos' : 'Leer más' }}</span>
+              <div class="bg-accent group-hover/btn:bg-dark p-1 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-3 w-3 text-white transition-transform duration-500" 
+                     [ngClass]="{'rotate-180': item.isExpanded}"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div *ngIf="newsList.length === 0 && !isLoading" 
+         class="text-center py-24 bg-white/5 rounded-[3rem] border-2 border-dashed border-white/10">
+      <div class="bg-dark p-6 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <p class="text-gray-400 italic text-xl">Sin noticias nuevas hoy.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-dark py-10 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-6 text-center text-gray-500 text-[10px] uppercase tracking-[0.3em]">
+    © 2026 Psicodeporte · Mente Fuerte, Juego Limpio
+  </div>
+</footer>

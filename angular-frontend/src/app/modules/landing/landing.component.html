@@ -1,47 +1,61 @@
+<div id="top"></div>
+
 <nav class="bg-white shadow-md sticky top-0 z-10">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-    <a href="#" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+    <a routerLink="/" fragment="top" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
       <span class="text-xl font-extrabold text-dark">PSICO</span>
       <span class="text-xl font-extrabold text-accent">DEPORTE</span>
     </a>
     <div class="space-x-4 hidden md:flex">
-      <a href="#sobre-mi" class="text-dark hover:text-accent">Sobre Mí</a>
-      <a href="#servicios" class="text-dark hover:text-accent">Servicios</a>
-      <a href="#contacto-cta" class="text-dark hover:text-accent">Contacto</a>
+      <a href="#sobre-mi" class="text-dark hover:text-accent font-medium">Sobre Mí</a>
+      <a href="#servicios" class="text-dark hover:text-accent font-medium">Servicios</a>
+      <a href="#contacto-cta" class="text-dark hover:text-accent font-medium">Contacto</a>
+      <a routerLink="/noticias" class="text-accent hover:text-dark font-bold border-l-2 border-gray-200 pl-4">
+        Noticias
+      </a>
     </div>
   </div>
 </nav>
 
 <header class="bg-accent text-white py-24 md:py-36 shadow-lg">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center">
+    
     <div class="md:col-span-4 flex justify-center">
         <img src="pd.png" 
-             alt="Logotipo El cuerpo corre pero la mente decide a dónde." 
-             class="w-58 h-58 object-contain">
+             alt="Logo Psicodeporte" 
+             class="w-full max-w-[280px] md:max-w-full h-auto 
+                    rounded-3xl shadow-2xl border-4 border-white/20 
+                    object-cover transform hover:scale-105 transition-all duration-500">
     </div>
-    <div class="md:col-span-8 text-center md:text-left">
-      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-        {{ impactPhrase }}
-      </h1>
-      <p class="text-xl md:text-2xl font-light italic mb-8 opacity-90">
-        {{ subtitle }}
+
+    <div class="md:col-span-8 space-y-6">
+      <h2 class="text-4xl md:text-6xl font-black leading-tight tracking-tighter uppercase">
+        Lleva tu rendimiento <br>
+        <span class="text-dark">al siguiente nivel</span>
+      </h2>
+      <p class="text-xl md:text-2xl opacity-90 font-medium italic">
+        "Psicología deportiva aplicada: claridad, estructura y emoción para que cada equipo rinda al máximo."
       </p>
-      <a href="#contacto-cta" 
-         class="bg-white text-dark px-8 py-3 rounded-md text-lg font-bold hover:bg-gray-100 transition duration-300 shadow-xl inline-block">
-        #Comencemos a trabajar!
-      </a>
+      <div class="pt-4">
+        <a href="#contacto-cta" 
+           class="bg-dark text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-accent transition-all shadow-xl inline-block uppercase tracking-wider">
+          Empezar ahora
+        </a>
+      </div>
     </div>
+
   </div>
 </header>
 
 <section id="sobre-mi" class="py-16 md:py-24 bg-white text-dark">
   <div class="max-w-7xl mx-auto px-6 lg:px-8 grid md:grid-cols-12 gap-12">
-
     <div class="md:col-span-6">
       <h2 class="text-3xl font-bold text-dark mb-6 border-b-2 border-accent pb-2">Sobre Mí</h2>
       <p class="text-lg leading-relaxed mb-8">{{ aboutMeText }}</p>
       <div class="rounded-lg overflow-hidden shadow-2xl">
-        [Imagen de la psicóloga deportiva]
+        <img src="/portada.jpg" 
+           alt="Psicología Deportiva" 
+           class="rounded-2xl shadow-2xl border-4 border-white/20 transform -rotate-3 hover:rotate-0 transition-transform duration-500 w-full max-w-sm object-cover">
       </div>
     </div>
     
@@ -54,43 +68,33 @@
                 </p>
             </div>
         </div>
-
         <h2 class="text-3xl font-bold text-dark mb-6 border-b-2 border-accent pb-2">Servicios</h2>
         <p class="text-lg leading-relaxed">{{ servicesIntro }}</p>
     </div>
   </div>
 </section>
 
-<section id="contacto-cta" class="py-16 md:py-24 bg-dark text-white">
-  <div class="max-w-7xl mx-auto px-6 lg:px-8 grid md:grid-cols-12 gap-12 items-center">
+<section id="contacto-cta" class="py-20 bg-dark text-white">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Quieres que trabajemos juntos?</h2>
+    <p class="text-xl opacity-90 mb-10">{{ contactText }}</p>
 
-    <div class="md:col-span-6">
-      <h2 class="text-3xl font-extrabold text-accent mb-4">Variables Clave para el Alto Rendimiento</h2>
-      <p class="text-lg mb-6 opacity-90">Diseño intervenciones psicológicas adaptadas a cada fase del entrenamiento y la competición, buscando hábitos sólidos que potencien el rendimiento.</p>
-      
-      <a href="#contacto-cta" 
-         class="bg-accent text-white px-8 py-3 rounded-md text-lg font-bold hover:bg-opacity-90 transition duration-300 shadow-xl inline-block">
-        #Comencemos a trabajar!
-      </a>
-    </div>
-
-    <div class="md:col-span-6 bg-dark p-6 md:p-8 rounded-xl border border-gray-700">
-      <h2 class="text-2xl font-bold text-white mb-6">¿Quieres que trabajemos juntos?</h2>
-      <form (ngSubmit)="onSubmit()" class="space-y-4">
-        <input type="text" [(ngModel)]="contactForm.name" name="name" placeholder="Tu Nombre" required
+    <div class="bg-white p-8 rounded-2xl shadow-2xl text-left max-w-lg mx-auto">
+      <form (ngSubmit)="onSubmit()" #f="ngForm" class="space-y-4">
+        <input type="text" [(ngModel)]="contactForm.name" name="name" required 
                class="w-full p-3 rounded-lg border-2 border-transparent focus:border-accent focus:outline-none text-dark"
-               aria-label="Nombre">
+               placeholder="Tu Nombre">
         
-        <input type="email" [(ngModel)]="contactForm.email" name="email" placeholder="Tu Email" required
+        <input type="email" [(ngModel)]="contactForm.email" name="email" required email 
                class="w-full p-3 rounded-lg border-2 border-transparent focus:border-accent focus:outline-none text-dark"
-               aria-label="Email">
+               placeholder="Tu Email">
         
         <textarea [(ngModel)]="contactForm.message" name="message" rows="3" required
                   class="w-full p-3 rounded-lg border-2 border-transparent focus:border-accent focus:outline-none text-dark resize-none"
-                  placeholder="Tu mensaje (para diseñar el plan psicológico que mejor se adapte a tu equipo)"></textarea>
+                  placeholder="Tu mensaje..."></textarea>
         
-        <button type="submit" 
-                class="w-full bg-accent text-white px-6 py-3 rounded-md text-lg font-bold hover:bg-opacity-90 transition duration-300 shadow-xl">
+        <button type="submit" [disabled]="!f.valid"
+                class="w-full bg-accent text-white px-6 py-3 rounded-md text-lg font-bold hover:bg-opacity-90 transition duration-300 shadow-xl disabled:opacity-50">
           Diseñemos tu plan
         </button>
       </form>
@@ -98,29 +102,73 @@
   </div>
 </section>
 
-<footer class="bg-dark text-light py-8 border-t border-accent">
+<footer class="bg-dark text-white py-12 border-t-4 border-accent">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
-    <h3 class="text-2xl font-bold text-accent mb-6">Variables Clave Trabajadas</h3>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div>
-        <h4 class="font-semibold text-white mb-2">{{ footerContent[0].title }}</h4>
-        <p class="text-sm opacity-80">{{ footerContent[0].text }}</p>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
       
-      <div>
-        <h4 class="font-semibold text-white mb-2">{{ footerContent[1].title }}</h4>
-        <p class="text-sm opacity-80">{{ footerContent[1].text }}</p>
+      <div class="space-y-4">
+        <h3 class="text-xl font-bold text-accent uppercase tracking-tighter">Contacto</h3>
+        <div class="text-gray-400 text-sm space-y-2">
+          <p>
+            <span class="font-bold text-white uppercase text-[10px] tracking-widest block mb-1">Dirección</span>
+            Sevilla, España
+          </p>
+          <p>
+            <span class="font-bold text-white uppercase text-[10px] tracking-widest block mb-1">Teléfono</span>
+            <a href="tel:+34951000000" class="hover:text-accent transition-colors">951 00 00 00</a>
+          </p>
+          <p>
+            <span class="font-bold text-white uppercase text-[10px] tracking-widest block mb-1">Email</span>
+            <a href="mailto:info@psicodeporte.com" class="hover:text-accent transition-colors">info&#64;psicodeporte.com</a>
+          </p>
+        </div>
       </div>
-      
-      <div>
-        <h4 class="font-semibold text-white mb-2">{{ footerContent[2].title }}</h4>
-        <p class="text-sm opacity-80">{{ footerContent[2].text }}</p>
+
+      <div class="md:text-right">
+        <h3 class="text-xl font-bold text-accent uppercase tracking-tighter mb-4">Información</h3>
+        <ul class="space-y-3">
+          <li>
+            <a href="legal" class="text-gray-400 hover:text-accent transition-all text-sm font-semibold uppercase tracking-widest text-[11px]">
+              Aviso Legal y Privacidad
+            </a>
+          </li>
+          <li>
+            <a href="#sobre-mi" class="text-gray-400 hover:text-accent transition-all text-sm">
+              Quiénes Somos
+            </a>
+          </li>
+          <li>
+            <a href="#servicios" class="text-gray-400 hover:text-accent transition-all text-sm">
+              Servicios
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    <div class="flex flex-col justify-end md:items-end">
+      <div class="text-[10px] text-gray-500 tracking-widest leading-relaxed">
+        <div class="uppercase">
+          &copy; {{ currentYear }} PSICODEPORTE. <br>
+          Todos los derechos reservados.
+        </div>
+        
+        <div class="mt-1">
+          <br>
+          Desarrollado con Angular y Symfony
+          </div>
+        
+        <div class="lowercase">
+          <a href="https://github.com/devserranoarocha" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="hover:text-accent transition-colors duration-300">
+            <br>
+            devserranoarocha
+          </a>
+        </div>
       </div>
     </div>
-    
-    <div class="text-center mt-10 border-t border-gray-700 pt-6">
-      <p class="text-sm opacity-70">© {{ currentYear }} Psicología Deportiva Aplicada. Desarrollado con Angular y Symfony.</p>
+
     </div>
   </div>
 </footer>

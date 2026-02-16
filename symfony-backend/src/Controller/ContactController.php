@@ -32,14 +32,14 @@ final class ContactController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (empty($data['name']) || empty($data['email']) || empty($data['reason'])) {
+        if (empty($data['name']) || empty($data['email']) || empty($data['message'])) {
             return $this->json(['error' => 'Datos incompletos'], Response::HTTP_BAD_REQUEST);
         }
 
         $contact = new Contact();
         $contact->setName($data['name']);
         $contact->setEmail($data['email']);
-        $contact->setReason($data['reason']);
+        $contact->setMessage($data['message']);
         $contact->setRead(false); // Por defecto no leído
 
         $this->entityManager->persist($contact);
@@ -50,28 +50,35 @@ final class ContactController extends AbstractController
 
     /**
      * GET /api/contact
-     * Listado para el panel de administración.
+     * Listado para el panel de administración ordenado, nuevos primero.
      */
     #[Route('', name: 'list', methods: ['GET'])]
     public function list(): JsonResponse
     {
-        // El acceso aquí será restringido por el security.yaml (IS_AUTHENTICATED_FULLY)
-        $messages = $this->repository->findAll();
+        // Buscamos todos ([]) y ordenamos por 'id' de forma DESCENDENTE
+        $messages = $this->repository->findBy([], ['id' => 'DESC']);
         
         return $this->json($messages);
     }
 
     /**
-     * PATCH /api/contact/{id}/read
-     * Marcar un mensaje como leído.
+     * PATCH /api/contact/{id}/toggle-read
+     * Cambia el estado de leído/no leído y lo guarda.
      */
-    #[Route('/{id}/read', name: 'mark_read', methods: ['PATCH'])]
-    public function markAsRead(Contact $contact): JsonResponse
+    #[Route('/{id}/toggle-read', name: 'toggle_read', methods: ['PATCH'])]
+    public function toggleRead(Contact $contact, EntityManagerInterface $em): JsonResponse
     {
-        $contact->setRead(true);
-        $this->entityManager->flush();
+        // Invertimos el estado actual
+        $contact->setRead(!$contact->isRead());
+        
+        // Guardamos en la base de datos
+        $em->flush();
 
-        return $this->json(['message' => 'Mensaje marcado como leído']);
+        return $this->json([
+            'id' => $contact->getId(),
+            'read' => $contact->isRead(),
+            'message' => 'Estado actualizado correctamente'
+        ]);
     }
 
     /**

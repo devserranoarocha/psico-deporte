@@ -1,58 +1,56 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
 import { LandingComponent } from './modules/landing/landing.component';
-// import { NotFoundComponent } from './not-found/not-found.component'; // Componente para manejar rutas no encontradas
+import { NewsComponent } from './modules/news/news.component';
+import { LoginComponent } from './modules/login/login.component';
+import { LoginRecoveryComponent } from './modules/login-recovery/login-recovery.component';
+import { AdminPanelComponent } from './modules/admin-panel/admin-panel.component';
+import { NewsPanelComponent } from './modules/news-panel/news-panel.component';
+import { PasswordChangeComponent } from './modules/password-change/password-change.component';
+import { NotFoundComponent } from './modules/not-found/not-found.component';
+import { LegalComponent } from './modules/legal/legal.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: LandingComponent,
-    title: 'Psicologia Deportiva' // Define el título de la página
+    title: 'Psicologia Deportiva' 
   },
-/*
-  {
-    path: 'about',
-    component: AboutComponent,
-    title: 'Psicologia Deportiva - Quiénes Somos'
+  { path: 'noticias', 
+    component: NewsComponent,
+    title: 'Psicologia Deportiva - Noticias' 
   },
-
-  {
-    path: 'services',
-    component: ServicesComponent,
-    title: 'Agencia Inmobiliaria - Nuestros Servicios'
+  { path: 'admin',
+    component: LoginComponent, 
+    title: 'Psicologia Deportiva - Login'
+  }, 
+  { path: 'admin/recovery', 
+    component: LoginRecoveryComponent, 
+    title: 'Psicologia Deportiva - Recuperar Contraseña' 
   },
-
-  {
-    path: 'contact',
-    component: ContactComponent,
-    title: 'Agencia Inmobiliaria - Contáctanos'
+  { path: 'admin-panel', 
+    component: AdminPanelComponent,
+    title: 'Psicologia Deportiva - Panel Administrativo'
   },
-
-  {
-    path: 'loginEmp',
-    component: LoginEmpComponent,
-    title: 'Agencia Inmobiliaria - Acceso empleados'
+  { path: 'news-panel',
+    component: NewsPanelComponent,
+    title: 'Psicologia Deportiva - Panel de Noticias'
   },
-
-  {
-    path: 'legal',
+  { path: 'password-change',
+    component: PasswordChangeComponent,
+    title: 'Psicologia Deportiva - Cambiar Contraseña'
+  },
+  { path: 'legal',
     component: LegalComponent,
-    title: 'Agencia Inmobiliaria - Aviso Legal'
+    title: 'Psicologia Deportiva - Aviso Legal'
   },
 
-  {
-    path: 'privacy-policy',
-    component: PrivacyPolicyComponent,
-    title: 'Agencia Inmobiliaria - Política de Privacidad'
+  { path: '404', 
+    component: NotFoundComponent,
+    title: 'Psicologia Deportiva - Página No Encontrada'
   },
-
-  {
-    path: 'gestorPanel',
-    component: GestorPanelComponent,
-    title: 'Agencia Inmobiliaria - Gestor de Oficina'
-  }*/
-  /*{
-    path: '**', // Ruta comodín para manejar cualquier otra URL
-    component: NotFoundComponent
-  }*/
+  { path: '**',    // Comodín: Cualquier ruta que no coincida con las anteriores, redirige al 404
+    redirectTo: '/404',
+    title: 'Psicologia Deportiva - Página No Encontrada'
+  }
+  
 ];
