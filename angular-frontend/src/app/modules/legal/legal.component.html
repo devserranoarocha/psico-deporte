@@ -1,0 +1,68 @@
+<div class="min-h-screen bg-white flex flex-col">
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a routerLink="/" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+        <span class="text-xl font-extrabold text-dark">PSICO</span>
+        <span class="text-xl font-extrabold text-accent">DEPORTE</span>
+      </a>
+      <div class="space-x-4">
+        <a routerLink="/" class="text-dark hover:text-accent font-medium text-sm">Volver al Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow py-16 px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      
+      <header class="mb-12 border-b border-gray-100 pb-8">
+        <h1 class="text-4xl font-black text-dark tracking-tighter uppercase mb-4">Aviso Legal y Privacidad</h1>
+        <p class="text-gray-500 italic">Última actualización: Febrero 2025</p>
+      </header>
+
+      <div class="prose prose-slate max-w-none space-y-10 text-gray-700 leading-relaxed">
+        
+        <section>
+          <h2 class="text-xl font-bold text-dark uppercase tracking-widest border-l-4 border-accent pl-4 mb-4">1. Datos Identificativos</h2>
+          <p>En cumplimiento con el deber de información recogido en artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y del Comercio Electrónico, a continuación se reflejan los siguientes datos:</p>
+          <ul class="list-disc pl-6 mt-4 space-y-2">
+            <li><strong>Titular:</strong> [Nombre Completo / Nombre de Empresa]</li>
+            <li><strong>CIF/NIF:</strong> [DNI/CIF]</li>
+            <li><strong>Domicilio:</strong> Sevilla, España</li>
+            <li><strong>Correo electrónico:</strong> info&#64;psicodeporte.com</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-dark uppercase tracking-widest border-l-4 border-accent pl-4 mb-4">2. Política de Privacidad</h2>
+          <p>A través de este sitio web no se recaban datos de carácter personal de los usuarios sin su conocimiento, ni se ceden a terceros. Los datos proporcionados mediante el formulario de contacto se utilizarán exclusivamente para atender su solicitud de información.</p>
+          <div class="bg-gray-50 p-6 rounded-2xl mt-4 border border-gray-100">
+            <h3 class="font-bold text-dark mb-2">Finalidad del tratamiento:</h3>
+            <p class="text-sm">Gestión de consultas, contacto profesional y envío de información solicitada relacionada con los servicios de psicología deportiva.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-dark uppercase tracking-widest border-l-4 border-accent pl-4 mb-4">3. Propiedad Intelectual</h2>
+          <p>Todos los contenidos del sitio web (incluyendo textos, gráficos, logotipos, iconos de botones, imágenes y software) son propiedad de <strong>PSICODEPORTE</strong> o de sus proveedores de contenidos y están protegidos por las normas nacionales e internacionales de propiedad industrial e intelectual.</p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-dark uppercase tracking-widest border-l-4 border-accent pl-4 mb-4">4. Exclusión de Responsabilidad</h2>
+          <p>El titular no se hace responsable, en ningún caso, de los daños y perjuicios de cualquier naturaleza que pudieran ocasionar, a título enunciativo: errores u omisiones en los contenidos, falta de disponibilidad del portal o la transmisión de virus o programas maliciosos.</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white py-8 border-t-4 border-accent">
+    <div class="max-w-7xl mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center opacity-60">
+      <div class="text-[10px] uppercase tracking-widest font-bold">
+        &copy; {{ currentYear }} PSICODEPORTE
+      </div>
+      <div class="mt-4 md:mt-0">
+        <a routerLink="/" class="text-[10px] uppercase tracking-widest font-bold hover:text-accent transition-colors">Volver a la web principal</a>
+      </div>
+    </div>
+  </footer>
+</div>

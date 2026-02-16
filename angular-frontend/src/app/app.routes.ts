@@ -7,6 +7,7 @@ import { AdminPanelComponent } from './modules/admin-panel/admin-panel.component
 import { NewsPanelComponent } from './modules/news-panel/news-panel.component';
 import { PasswordChangeComponent } from './modules/password-change/password-change.component';
 import { NotFoundComponent } from './modules/not-found/not-found.component';
+import { LegalComponent } from './modules/legal/legal.component';
 
 export const routes: Routes = [
   {
@@ -38,6 +39,11 @@ export const routes: Routes = [
     component: PasswordChangeComponent,
     title: 'Psicologia Deportiva - Cambiar Contraseña'
   },
+  { path: 'legal',
+    component: LegalComponent,
+    title: 'Psicologia Deportiva - Aviso Legal'
+  },
+
   { path: '404', 
     component: NotFoundComponent,
     title: 'Psicologia Deportiva - Página No Encontrada'
@@ -46,4 +52,5 @@ export const routes: Routes = [
     redirectTo: '/404',
     title: 'Psicologia Deportiva - Página No Encontrada'
   }
+  
 ];
