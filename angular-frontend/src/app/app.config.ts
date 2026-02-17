@@ -3,7 +3,6 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
-// Importes para el idioma español
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 
@@ -19,7 +18,6 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideHttpClient(),
-    // Establecemos el idioma por defecto a español
-    { provide: LOCALE_ID, useValue: 'es-ES' }
+      { provide: LOCALE_ID, useValue: 'es-ES' }
   ]
 };

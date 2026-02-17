@@ -23,10 +23,6 @@ final class ContactController extends AbstractController
         $this->repository = $repository;
     }
 
-    /**
-     * POST /api/contact
-     * Este endpoint debería ser público para que cualquiera envíe el formulario.
-     */
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
@@ -40,7 +36,7 @@ final class ContactController extends AbstractController
         $contact->setName($data['name']);
         $contact->setEmail($data['email']);
         $contact->setMessage($data['message']);
-        $contact->setRead(false); // Por defecto no leído
+        $contact->setRead(false);
 
         $this->entityManager->persist($contact);
         $this->entityManager->flush();
@@ -48,30 +44,19 @@ final class ContactController extends AbstractController
         return $this->json(['message' => 'Mensaje enviado correctamente'], Response::HTTP_CREATED);
     }
 
-    /**
-     * GET /api/contact
-     * Listado para el panel de administración ordenado, nuevos primero.
-     */
     #[Route('', name: 'list', methods: ['GET'])]
     public function list(): JsonResponse
     {
-        // Buscamos todos ([]) y ordenamos por 'id' de forma DESCENDENTE
         $messages = $this->repository->findBy([], ['id' => 'DESC']);
         
         return $this->json($messages);
     }
 
-    /**
-     * PATCH /api/contact/{id}/toggle-read
-     * Cambia el estado de leído/no leído y lo guarda.
-     */
     #[Route('/{id}/toggle-read', name: 'toggle_read', methods: ['PATCH'])]
     public function toggleRead(Contact $contact, EntityManagerInterface $em): JsonResponse
     {
-        // Invertimos el estado actual
         $contact->setRead(!$contact->isRead());
         
-        // Guardamos en la base de datos
         $em->flush();
 
         return $this->json([
@@ -81,10 +66,6 @@ final class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * DELETE /api/contact/{id}
-     * Eliminar un mensaje.
-     */
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(Contact $contact): JsonResponse
     {

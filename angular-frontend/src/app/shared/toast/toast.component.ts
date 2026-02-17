@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ToastService, ToastNotification } from '../../services/toast.service';
-import { CommonModule } from '@angular/common'; // Importa CommonModule para *ngIf y ngClass
-// Importamos operadores Reactive Extensions for JavaScript
+import { CommonModule } from '@angular/common'; 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-toast, [app-toast]',
-  standalone: true,            //Simplificamos el componente declarandolo como autonomo 
-  imports: [CommonModule],     // Se usa para standalone components
+  standalone: true,            
+  imports: [CommonModule],     
   templateUrl: './toast.component.html'
 })
 export class NotificationToastComponent implements OnInit, OnDestroy {
@@ -30,7 +29,7 @@ export class NotificationToastComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  getNotificationClass(): string {  // Mostramos toast segun tipo de notificacion.
+  getNotificationClass(): string { 
     if (!this.currentNotification){
         return '';
     }
@@ -41,7 +40,7 @@ export class NotificationToastComponent implements OnInit, OnDestroy {
     }
   }
 
-  hideNotification(): void {     // Escondemos notificacion.
+  hideNotification(): void {   
     this.toastService.clear();
   }
   

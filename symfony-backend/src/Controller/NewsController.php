@@ -51,7 +51,6 @@ final class NewsController extends AbstractController
         $news->setNewsText($text);
         $news->setDate(new \DateTime($dateStr ?: 'now'));
 
-        // Control de imagen: Si no hay archivo, el campo 'image' en DB será NULL
         if ($imageFile) {
             $newFilename = uniqid().'.'.$imageFile->guessExtension();
             $imageFile->move($this->getParameter('news_images_directory'), $newFilename);
@@ -79,7 +78,6 @@ final class NewsController extends AbstractController
         if ($dateStr) $news->setDate(new \DateTime($dateStr));
 
         if ($imageFile) {
-            // Borramos la anterior solo si el usuario está subiendo una nueva
             if ($news->getImage()) {
                 $oldPath = $this->getParameter('news_images_directory').'/'.$news->getImage();
                 if (file_exists($oldPath)) unlink($oldPath);
@@ -89,8 +87,7 @@ final class NewsController extends AbstractController
             $imageFile->move($this->getParameter('news_images_directory'), $newFilename);
             $news->setImage($newFilename);
         }
-        // Si no hay $imageFile, no hacemos nada (mantiene la imagen que ya tenía)
-
+        
         $this->entityManager->flush();
         return $this->json(['message' => 'Actualizada']);
     }

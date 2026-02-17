@@ -95,7 +95,6 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    // VALIDACIÓN LÓGICA: Trim elimina espacios vacíos al inicio y final
     if (!this.ngModel.title.trim() || !this.ngModel.news_text.trim()) {
       this.toastService.error('Por favor, completa el título y el contenido.');
       return;

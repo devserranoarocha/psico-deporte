@@ -21,7 +21,7 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient, 
     private router: Router,
-    private toastService: ToastService // Inyectamos el servicio
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {

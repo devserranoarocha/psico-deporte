@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ToastService } from '../../services/toast.service'; // Asegúrate de que la ruta sea correcta
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login-recovery',
@@ -25,7 +25,7 @@ export class LoginRecoveryComponent {
   constructor(
     private http: HttpClient, 
     private router: Router,
-    private toastService: ToastService // Inyectamos el servicio
+    private toastService: ToastService
   ) {}
 
   onRecoverPassword(): void {
@@ -36,14 +36,13 @@ export class LoginRecoveryComponent {
       next: (response) => {
         this.isLoading = false;
         this.isSubmitted = true;
-        // Lanzamos toast de éxito
+        
         this.toastService.success('¡Identidad verificada! Revisa tu correo para la nueva clave.');
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = 'Los datos introducidos no coinciden con ningún registro activo.';
         
-        // Lanzamos toast de error
         this.toastService.error('Error de validación: Verifica los datos introducidos.');
         console.error('Recovery error:', err);
       }

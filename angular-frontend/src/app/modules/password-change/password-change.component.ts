@@ -17,7 +17,6 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   isSubmitting: boolean = false;
 
-  // Propiedades para la Navbar consistente
   currentUser: any = null;
   currentDate: Date = new Date();
   private timeSubscription?: Subscription;
@@ -37,7 +36,6 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUserData();
-    // Reloj en tiempo real idéntico a los otros paneles
     this.timeSubscription = interval(1000).subscribe(() => {
       this.currentDate = new Date();
     });
@@ -74,7 +72,6 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.toastService.success('Contraseña actualizada. Por seguridad, inicia sesión de nuevo.', 4000);
-          // Retrasamos un poco el logout para que el usuario vea el mensaje
           setTimeout(() => this.logout(), 2000);
         },
         error: (err) => {

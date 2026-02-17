@@ -35,7 +35,6 @@ export class LoginComponent {
       next: (response) => {
         localStorage.setItem('token', response.token);
         
-        // Lanzamos toast de éxito antes de redirigir
         this.toastService.success('¡Sesión iniciada con éxito! Bienvenido al panel.');
         
         this.router.navigate(['/admin-panel']);
@@ -44,7 +43,6 @@ export class LoginComponent {
         this.isLoading = false;
         this.errorMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
         
-        // Lanzamos toast de error para reforzar el mensaje
         this.toastService.error('Error de autenticación: verifica tus credenciales.');
         
         console.error('Login error:', err);

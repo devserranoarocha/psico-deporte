@@ -24,7 +24,6 @@ export class NewsComponent implements OnInit {
     this.isLoading = true;
     this.newsService.getNews().subscribe({
       next: (data) => {
-        // Añadimos la propiedad 'isExpanded' a cada noticia
         this.newsList = data.map(item => ({ ...item, isExpanded: false }));
         this.isLoading = false;
       },
@@ -35,7 +34,6 @@ export class NewsComponent implements OnInit {
     });
   }
 
-  // Método para alternar entre expandido y contraído
   toggleExpand(item: any): void {
     item.isExpanded = !item.isExpanded;
   }

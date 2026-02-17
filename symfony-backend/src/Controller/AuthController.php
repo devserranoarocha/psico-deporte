@@ -90,7 +90,6 @@ final class AuthController extends AbstractController
         $username = $data['username'] ?? '';
         $email = $data['email'] ?? '';
 
-        // Validamos que el usuario y el email pertenezcan a la misma cuenta
         $user = $userRepository->findOneBy([
             'username' => $username,
             'email' => $email
@@ -102,7 +101,7 @@ final class AuthController extends AbstractController
             ], JsonResponse::HTTP_NOT_FOUND);
         }
         /* Se deja preparado el proceso de recuperación de contraseña, 
-            pero se comenta para evitar problemas de seguridad en un entorno de desarrollo 
+            pero se comenta para evitar problemas de seguridad en el entorno de desarrollo 
             sin configurar adecuadamente el servicio de correo. .env listo tb el DSN para mailtrap.
             
             Proceso de recuperación:
@@ -165,17 +164,14 @@ final class AuthController extends AbstractController
         $oldPassword = $data['oldPassword'] ?? '';
         $newPassword = $data['newPassword'] ?? '';
 
-        // 1. Validar contraseña antigua
         if (!$passwordHasher->isPasswordValid($user, $oldPassword)) {
             return $this->json(['error' => 'La contraseña actual no es correcta'], Response::HTTP_BAD_REQUEST);
         }
 
-        // 2. Validar longitud mínima
         if (strlen($newPassword) < 6) {
             return $this->json(['error' => 'La nueva contraseña es demasiado corta'], Response::HTTP_BAD_REQUEST);
         }
 
-        // 3. Hashear y guardar
         $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
         $user->setPassword($hashedPassword);
         

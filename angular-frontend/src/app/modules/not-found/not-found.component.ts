@@ -9,6 +9,5 @@ import { RouterModule } from '@angular/router';
   templateUrl: './not-found.component.html'
 })
 export class NotFoundComponent {
-  // Podríamos inyectar Location para un botón de "Volver atrás"
   constructor() {}
 }

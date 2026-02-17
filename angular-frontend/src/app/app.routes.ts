@@ -48,7 +48,7 @@ export const routes: Routes = [
     component: NotFoundComponent,
     title: 'Psicologia Deportiva - Página No Encontrada'
   },
-  { path: '**',    // Comodín: Cualquier ruta que no coincida con las anteriores, redirige al 404
+  { path: '**',
     redirectTo: '/404',
     title: 'Psicologia Deportiva - Página No Encontrada'
   }
