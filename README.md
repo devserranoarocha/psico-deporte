@@ -1,10 +1,63 @@
-Portal de Psicologia deportiva para un pequeño gabinete que trabaja dicha disciplina.
+# 🧠 Psicodeporte - Portal de Gestión para Psicología Deportiva
 
-Desarrollado con Angular, Symphony y PosgreSQL.
- 
+Proyecto Fullstack diseñado para la gestión integral de un gabinete de psicología deportiva. Este repositorio es una muestra técnica de mi capacidad para construir aplicaciones robustas y seguras utilizando el ecosistema **PHP/Symfony** en el backend y **Angular** en el frontend.
 
-# 📚 Despliegue de una Aplicación Symfony y Angular con Docker Compose
-Este proyecto utiliza Docker y Docker Compose para desplegar una aplicación que incluye un backend Symfony, un frontend Angular y una base de datos PostgreSQL de manera rápida y sencilla.
+---
+
+## 🚀 Perfil Tecnológico Destacado
+
+Como aspirante a Desarrollador Backend PHP, este proyecto ha sido el escenario para implementar estándares profesionales en Symfony:
+
+* **Arquitectura de API RESTful:** Diseño de endpoints siguiendo los principios de statelessness y recursos bien definidos.
+* **Seguridad Avanzada (JWT):** Implementación de autenticación mediante `lexik/jwt-authentication-bundle` para la protección de la zona administrativa.
+* **Persistencia con Doctrine ORM:** Modelado de datos complejo, uso de repositorios personalizados y gestión de migraciones para PostgreSQL.
+* **Validación de Datos:** Uso de *Constraints* de Symfony para asegurar la integridad de los datos en formularios y carga de archivos.
+* **Gestión de Archivos:** Servicio de gestión de imágenes (upload/update/delete) integrado en el servidor Symfony.
+* **Inyección de Dependencias:** Uso intensivo de servicios desacoplados para mantener un código limpio y mantenible (SOLID).
+
+---
+
+## 🛠️ Stack Tecnológico
+
+### Backend
+* **Framework:** Symfony 7.2.5
+* **Lenguaje:** PHP 8.2.29 (uso de Atributos y Tipado Estricto).
+* **Seguridad:** JWT (JSON Web Tokens).
+* **Base de Datos:** PostgreSQL.
+* **Infraestructura:** Docker & Docker Compose.
+
+### Frontend
+* **Framework:** Angular 19.2.8 (Standalone Components).
+* **Estilos:** Tailwind CSS.
+* **UX/UI:** ngx-toastr para notificaciones y Reactive Forms para validaciones en tiempo real.
+
+---
+
+## 🌟 Funcionalidades Clave
+
+1.  **Dashboard Administrativo:** Gestión centralizada de mensajes y noticias protegida por roles.
+2.  **Motor de Noticias:** CRUD completo con previsualización dinámica y tratamiento de imágenes en servidor.
+3.  **Centro de Mensajería:** Sistema de contacto con gestión de estados (Pendiente/Leído) y borrado lógico.
+4.  **Seguridad de Usuario:** Sistema de cambio de credenciales con hashing seguro y validación cruzada.
+5.  **Firma en Consola:** Mensaje de autoría personalizado mediante CSS en la consola del navegador para desarrolladores.
+
+---
+
+## 🏗️ Mejoras Futuras y Escalabilidad
+
+Para demostrar mi compromiso con la calidad y evolución del software, tengo planificadas las siguientes implementaciones:
+
+* **[Backend] Testing Automatizado:** Implementación de pruebas unitarias y de integración utilizando **PHPUnit** para asegurar la estabilidad de la lógica de negocio.
+* **[Backend] API Documentation:** Integración de **NelmioApiDocBundle** (Swagger) para documentar y probar los endpoints de forma interactiva.
+* **[Backend] Messenger & Queues:** Implementación del componente Messenger de Symfony para el envío asíncrono de correos electrónicos tras el formulario de contacto.
+* **[Frontend] State Management:** Migración a **NgRx** para gestionar estados complejos si la aplicación crece en volumen de datos.
+* **[Infraestructura] CI/CD:** Configuración de **GitHub Actions** para el despliegue automático y ejecución de tests en cada push.
+
+---
+
+## 📦 Despliegue con Docker Compose
+
+Este proyecto utiliza Docker y Docker Compose para desplegar una aplicación que incluye un backend Symfony, un frontend Angular y una base de datos PostgreSQL de manera rápida y sencilla. Esto garantiza que funcione exactamente igual en cualquier entorno.
 
 ---
 
@@ -20,8 +73,8 @@ Antes de comenzar, asegúrate de tener instalados en tu sistema:
 ### 1️⃣ Clonar el repositorio
 Ejecuta el siguiente comando para clonar el proyecto:
 ```bash
-git clone "ruta_GitHub"
-cd Psicologia-Deportiva
+git clone https://github.com/devserranoarocha/psico-deporte
+cd psico-deporte
 ```
 
 ### 2️⃣ Levantar los contenedores
@@ -78,18 +131,18 @@ docker-compose down -v
   docker-compose logs -f
   ```
 
-Para más información sobre **Symfony**, **Angular** o **PostgreSQL**, consulta sus respectivas documentaciones oficiales.
+Para más información sobre **Symfony**, **Angular** o **PostgreSQL**, consultar sus respectivas documentaciones oficiales.
 
 ## Comandos útiles
 
 - Para acceder al contenedor del Frontend Angular:
 ```
-  docker exec -it angular_frontend sh
+  docker exec -it pd_frontend sh
 ```
 
 - Para acceder al contenedor del Backend Symfony:
 ```
-docker exec -it symfony_backend bash
+docker exec -it pd_backend bash
 ```
 - Si no tienes problemas de permisos para levantar un contenedor, prueba a ejecutar el siguiente comando:
 
