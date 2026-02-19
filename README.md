@@ -167,7 +167,7 @@ Para más información sobre **Symfony**, **Angular** o **PostgreSQL**, consulta
 ```
 docker exec -it pd_backend bash
 ```
-- Si no tienes problemas de permisos para levantar un contenedor, prueba a ejecutar el siguiente comando:
+- Si tienes problemas de permisos para levantar un contenedor, prueba a ejecutar el siguiente comando:
 
 ```
 sudo chmod 775 -R (contenedor_de_Symfony_o_Angular_frontend)
