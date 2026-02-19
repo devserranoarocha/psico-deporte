@@ -1,6 +1,12 @@
 # 🧠 Psicodeporte - Portal de Gestión para Psicología Deportiva
 
-Proyecto Fullstack diseñado para la gestión integral de un gabinete de psicología deportiva. Este repositorio es una muestra técnica de mi capacidad para construir aplicaciones robustas y seguras utilizando el ecosistema **PHP/Symfony** en el backend y **Angular** en el frontend.
+[![Symfony](https://img.shields.io/badge/Symfony-7.2.5-black.svg?logo=symfony&logoColor=white)](https://symfony.com/)
+[![Angular](https://img.shields.io/badge/Angular-19.2.8-red.svg?logo=angular)](https://angular.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg?logo=docker)](https://www.docker.com/)
+
+![Banner del Proyecto](screenshots/psicoDeporte-LandingCabecera.png) 
+![Banner del Proyecto](screenshots/psicoDeporte-LandingContacto.png)
+![Banner del Proyecto](screenshots/psicoDeporte-LandingFooter.png) Proyecto Fullstack diseñado para la gestión integral de un gabinete de psicología deportiva. Este repositorio es una muestra técnica de mi capacidad para construir aplicaciones robustas y seguras utilizando el ecosistema **PHP/Symfony** en el backend y **Angular** en el frontend.
 
 ---
 
@@ -31,10 +37,27 @@ Como aspirante a Desarrollador Backend PHP, este proyecto ha sido el escenario p
 * **Estilos:** Tailwind CSS.
 * **UX/UI:** ngx-toastr para notificaciones y Reactive Forms para validaciones en tiempo real.
 
+### Arquitectura de Comunicación
+
+```mermaid
+graph LR
+    A[Angular Client] -- JWT Auth --> B(Symfony API)
+    B -- Doctrine ORM --> C[(PostgreSQL)]
+    B -- FileSystem --> D[Images Storage]
+    
+    style B fill:#000,stroke:#fff,stroke-width:2px,color:#fff
+    style C fill:#336791,stroke:#fff,color:#fff
+```
+
 ---
 
 ## 🌟 Funcionalidades Clave
 
+![Login](screenshots/psicoDeporte-Login.png)
+![Recuperación de Acceso](screenshots/psicoDeporte-LoginRecuperacion.png)
+![Panel de Administración](screenshots/psicoDeporte-AdminMensajes.png)
+![Panel de Administración](screenshots/psicoDeporte-AdminNoticias.png)
+![Panel de Administración](screenshots/psicoDeporte-AdminSeguridad.png)
 1.  **Dashboard Administrativo:** Gestión centralizada de mensajes y noticias protegida por roles.
 2.  **Motor de Noticias:** CRUD completo con previsualización dinámica y tratamiento de imágenes en servidor.
 3.  **Centro de Mensajería:** Sistema de contacto con gestión de estados (Pendiente/Leído) y borrado lógico.
